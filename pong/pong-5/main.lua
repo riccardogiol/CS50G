@@ -23,6 +23,7 @@ paddle_speed = 200
 
 function love.load()
 	love.graphics.setDefaultFilter('nearest', 'nearest')
+	love.window.setTitle('Pong by RG')
 
 	math.randomseed(os.time())
 
@@ -104,6 +105,21 @@ function love.draw()
 	love.graphics.clear(40/255, 45/255, 52/255, 255/255)
 
 	-- draw top banner
+	drawBanner()
+	displayFPS()
+	
+	--draw playground
+	playground:render()
+
+	paddle1:render()
+	paddle2:render()
+
+	ball:render()
+
+	push:apply('end')
+end
+
+function drawBanner()
 	love.graphics.setFont(smallFont)
 	love.graphics.printf(string.format("Hi, it's me %s!", my_name), 0, 5, virtual_width, 'center')
 	if gameState == 'start' then
@@ -115,14 +131,10 @@ function love.draw()
 	love.graphics.setFont(scoreFont)
 	love.graphics.printf(tostring(p1score), 0, 5, virtual_width / 2 - 30, 'center')
 	love.graphics.printf(tostring(p2score), virtual_width / 2 + 30, 5, virtual_width / 2 - 30, 'center')
-
-	--draw playground
-	playground:render()
-
-	paddle1:render()
-	paddle2:render()
-
-	ball:render()
-
-	push:apply('end')
 end
+
+function displayFPS()
+	love.graphics.setFont(smallFont)
+	love.graphics.print('FPS ' .. tostring(love.timer.getFPS()), 5, 5)
+end
+
