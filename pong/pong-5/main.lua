@@ -1,7 +1,11 @@
 push = require 'push'
+Class = require 'class'
+
+require 'Paddle'
+require 'Playground'
 
 -- declare some constants
-my_name = "Riccardo"
+my_name = "Pong"
 window_width = 1280
 window_hight = 720
 
@@ -10,8 +14,10 @@ virtual_height = 243
 
 paddle_dist_from_bord = 20
 top_banner_high = 30
-playground_dist_from_bord = 20
+playground_dist_from_bord = 10
 
+paddle_width = 5
+paddle_height = 20
 paddle_speed = 200
 
 function love.load()
@@ -24,15 +30,29 @@ function love.load()
 
 	push:setupScreen(virtual_width, virtual_height, window_width, window_hight, {fullscreen = false, resizable = false, vsync = true})
 
-	--initialize some variables
-	p1score = 0 
-	p2score = 13
+	--initialize game variables
+	playground = Playground(0, virtual_width, top_banner_high + playground_dist_from_bord, virtual_height - playground_dist_from_bord, 1)
 
-	p1Y = top_banner_high+playground_dist_from_bord +10
-	p2Y = virtual_height - playground_dist_from_bord - 20 - 10
+	p1score = 0
+	p2score = 0
+
+	paddle1 = Paddle(paddle_dist_from_bord,
+		top_banner_high+playground_dist_from_bord +10,
+		paddle_width,
+		paddle_height,
+		paddle_speed,
+		top_banner_high + playground_dist_from_bord,
+		virtual_height - playground_dist_from_bord)
+	paddle2 = Paddle(virtual_width - paddle_dist_from_bord - paddle_width,
+		virtual_height - playground_dist_from_bord - paddle_height - 10,
+		paddle_width,
+		paddle_height,
+		paddle_speed,
+		top_banner_high + playground_dist_from_bord,
+		virtual_height - playground_dist_from_bord)
 
 	ballX = virtual_width / 2 - 2
-	ballY = virtual_height / 2 - 2
+	ballY = ((virtual_height - playground_dist_from_bord - (top_banner_high + playground_dist_from_bord)) / 2) + top_banner_high + playground_dist_from_bord - 2
 
 	ballDX = 0
 	ballDY = 0
@@ -42,15 +62,15 @@ end
 
 function love.update(dt)
 	if love.keyboard.isDown('w') then
-		p1Y = p1Y - paddle_speed * dt 
+		paddle1:updatePosition(dt, 'up') 
 	elseif love.keyboard.isDown('s') then
-		p1Y = p1Y + paddle_speed * dt 
+		paddle1:updatePosition(dt, 'down')
 	end
 
 	if love.keyboard.isDown('up') then
-		p2Y = p2Y - paddle_speed * dt 
+		paddle2:updatePosition(dt, 'up') 
 	elseif love.keyboard.isDown('down') then
-		p2Y = p2Y + paddle_speed * dt 
+		paddle2:updatePosition(dt, 'down')
 	end
 
 	if gameState == 'play' then
@@ -81,23 +101,27 @@ end
 
 function love.draw()
 	push:apply('start')
-
 	love.graphics.clear(40/255, 45/255, 52/255, 200/255)
 
+	-- draw top banner
 	love.graphics.setFont(smallFont)
-	love.graphics.printf(string.format("Hi, it's me %s!", my_name), 0, 10, virtual_width, 'center')
+	love.graphics.printf(string.format("Hi, it's me %s!", my_name), 0, 5, virtual_width, 'center')
 	if gameState == 'start' then
-		love.graphics.printf("Ready to start!", 0, 20, virtual_width, 'center')
+		love.graphics.printf("Ready to start!", 0, 15, virtual_width, 'center')
 	elseif gameState == 'play' then
-		love.graphics.printf("Play!", 0, 20, virtual_width, 'center')
+		love.graphics.printf("Play!", 0, 15, virtual_width, 'center')
 	end
 
 	love.graphics.setFont(scoreFont)
-	love.graphics.printf(tostring(p1score), 0, 10, virtual_width / 2 - 30, 'center')
-	love.graphics.printf(tostring(p2score), virtual_width / 2 + 30, 10, virtual_width / 2 - 30, 'center')
+	love.graphics.printf(tostring(p1score), 0, 5, virtual_width / 2 - 30, 'center')
+	love.graphics.printf(tostring(p2score), virtual_width / 2 + 30, 5, virtual_width / 2 - 30, 'center')
 
-	love.graphics.rectangle('fill', paddle_dist_from_bord, p1Y, 5, 20)
-	love.graphics.rectangle('fill', virtual_width - paddle_dist_from_bord - 5, p2Y, 5, 20)
+	--draw playground
+	playground:render()
+
+	paddle1:render()
+	paddle2:render()
+
 	love.graphics.rectangle('fill', ballX, ballY, 4, 4)
 
 	push:apply('end')
