@@ -20,7 +20,7 @@ function Ball:setSpeed(dx, dy)
 end
 
 function Ball:updatePosition(dt, paddle1, paddle2, playground)
-	self.x = self.x + self.dx*dt
+	--udate position for Y, checking playground
 	next_y = self.y + self.dy*dt
 	if next_y < playground.y_min then
 		self.dy = - self.dy
@@ -30,6 +30,32 @@ function Ball:updatePosition(dt, paddle1, paddle2, playground)
 		next_y = playground.y_max - (next_y + self.height - playground.y_max) - self.height
 	end
 	self.y = next_y
+
+	--udate position for X, checking paddles
+	self.x = self.x + self.dx*dt
+
+	if self:collides(paddle1) then
+		self.dx = - self.dx * 1.05
+		self.x = (paddle1.x + paddle1.width) + ((paddle1.x + paddle1.width) - self.x)
+		self.dy = (self.dy / math.abs(self.dy)) * (math.random(1, 50) * 1.5)
+	elseif self:collides(paddle2) then
+		self.dx = - self.dx * 1.05
+		self.x = paddle2.x - ((self.x + self.width) - paddle2.x)
+		self.dy = (self.dy / math.abs(self.dy)) * (math.random(1, 50) * 1.5)
+	end 
+
+end
+
+function Ball:collides(paddle)
+	if self.x > (paddle.x + paddle.width) or (self.x + self.width) < paddle.x then
+		return false
+	end
+
+	if self.y > (paddle.y + paddle.height) or (self.y + self.height) < paddle.y then
+		return false
+	end
+
+	return true
 end
 
 function Ball:render()

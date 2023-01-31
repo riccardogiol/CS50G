@@ -18,7 +18,7 @@ top_banner_high = 30
 playground_dist_from_bord = 10
 
 paddle_width = 5
-paddle_height = 20
+paddle_height = 30
 paddle_speed = 200
 
 function love.load()
@@ -107,7 +107,7 @@ function love.draw()
 	-- draw top banner
 	drawBanner()
 	displayFPS()
-	
+
 	--draw playground
 	playground:render()
 
