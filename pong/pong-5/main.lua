@@ -3,6 +3,7 @@ Class = require 'class'
 
 require 'Paddle'
 require 'Playground'
+require 'Ball'
 
 -- declare some constants
 my_name = "Pong"
@@ -51,11 +52,12 @@ function love.load()
 		top_banner_high + playground_dist_from_bord,
 		virtual_height - playground_dist_from_bord)
 
-	ballX = virtual_width / 2 - 2
-	ballY = ((virtual_height - playground_dist_from_bord - (top_banner_high + playground_dist_from_bord)) / 2) + top_banner_high + playground_dist_from_bord - 2
-
-	ballDX = 0
-	ballDY = 0
+	ball = Ball(virtual_width / 2 - 2,
+		((virtual_height - playground_dist_from_bord - (top_banner_high + playground_dist_from_bord)) / 2) + top_banner_high + playground_dist_from_bord - 2, 
+		4,
+		4, 
+		0,
+		0)
 
 	gameState = 'start'
 end
@@ -74,8 +76,7 @@ function love.update(dt)
 	end
 
 	if gameState == 'play' then
-		ballX = ballX + ballDX * dt
-		ballY = ballY + ballDY * dt
+		ball:updatePosition(dt, paddle1, paddle2, playground)
 	end
 end
 
@@ -88,12 +89,11 @@ function love.keypressed(key)
 	if (key == 'enter' or key == 'return') and gameState == 'start' then
 		ballDX = math.random(2) == 1 and 100 or -100
 		ballDY = math.random(-50, 50) * 1.5
+		ball:setSpeed(ballDX, ballDY)
 		gameState = 'play'
 	elseif (key == 'enter' or key == 'return') and gameState == 'play' then
-		ballX = virtual_width / 2 - 2
-		ballY = virtual_height / 2 - 2
-		ballDX = 0
-		ballDY = 0
+		ball:setPosition(virtual_width / 2 - 2, ((virtual_height - playground_dist_from_bord - (top_banner_high + playground_dist_from_bord)) / 2) + top_banner_high + playground_dist_from_bord - 2)
+		ball:setSpeed(0,0)
 		gameState = 'start'
 	end
 end
@@ -101,7 +101,7 @@ end
 
 function love.draw()
 	push:apply('start')
-	love.graphics.clear(40/255, 45/255, 52/255, 200/255)
+	love.graphics.clear(40/255, 45/255, 52/255, 255/255)
 
 	-- draw top banner
 	love.graphics.setFont(smallFont)
@@ -122,7 +122,7 @@ function love.draw()
 	paddle1:render()
 	paddle2:render()
 
-	love.graphics.rectangle('fill', ballX, ballY, 4, 4)
+	ball:render()
 
 	push:apply('end')
 end
