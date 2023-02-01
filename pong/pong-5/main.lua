@@ -21,7 +21,7 @@ paddle_width = 5
 paddle_height = 30
 paddle_speed = 200
 
-max_score = 3
+max_score = 5
 
 Player = Class{}
 
@@ -39,7 +39,7 @@ function love.load()
 	smallFont = love.graphics.newFont('font.ttf', 8)
 	scoreFont = love.graphics.newFont('font.ttf', 32)
 
-	push:setupScreen(virtual_width, virtual_height, window_width, window_hight, {fullscreen = false, resizable = false, vsync = true})
+	push:setupScreen(virtual_width, virtual_height, window_width, window_hight, {fullscreen = false, resizable = true, vsync = true})
 
 	sounds = {
 		['hit_paddle'] = love.audio.newSource('sounds/hit2.wav', 'static'),
@@ -82,6 +82,10 @@ function love.load()
 		0)
 
 	initialiseMatch()
+end
+
+function love.resize(w, h)
+    push:resize(w, h)
 end
 
 function love.update(dt)
