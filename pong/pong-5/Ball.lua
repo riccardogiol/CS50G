@@ -25,9 +25,11 @@ function Ball:updatePosition(dt, paddle1, paddle2, playground)
 	if next_y < playground.y_min then
 		self.dy = - self.dy
 		next_y = playground.y_min + (playground.y_min - next_y)
+		sounds['hit_border']:play()
 	elseif (next_y + self.height) > playground.y_max then
 		self.dy = - self.dy
 		next_y = playground.y_max - (next_y + self.height - playground.y_max) - self.height
+		sounds['hit_border']:play()
 	end
 	self.y = next_y
 
@@ -38,10 +40,12 @@ function Ball:updatePosition(dt, paddle1, paddle2, playground)
 		self.dx = - self.dx * 1.05
 		self.x = (paddle1.x + paddle1.width) + ((paddle1.x + paddle1.width) - self.x)
 		self.dy = (self.dy / math.abs(self.dy)) * (math.random(1, 50) * 1.5)
+		sounds['hit_paddle']:play()
 	elseif self:collides(paddle2) then
 		self.dx = - self.dx * 1.05
 		self.x = paddle2.x - ((self.x + self.width) - paddle2.x)
 		self.dy = (self.dy / math.abs(self.dy)) * (math.random(1, 50) * 1.5)
+		sounds['hit_paddle']:play()
 	end 
 end
 

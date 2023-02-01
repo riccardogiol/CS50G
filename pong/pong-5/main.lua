@@ -41,6 +41,12 @@ function love.load()
 
 	push:setupScreen(virtual_width, virtual_height, window_width, window_hight, {fullscreen = false, resizable = false, vsync = true})
 
+	sounds = {
+		['hit_paddle'] = love.audio.newSource('sounds/hit2.wav', 'static'),
+		['hit_border'] = love.audio.newSource('sounds/hit1.wav', 'static'),
+		['point'] = love.audio.newSource('sounds/point.wav', 'static')
+	}
+
 	--initialize game variables
 	playground_top = top_banner_high + playground_dist_from_bord
 	playground_bottom = virtual_height - playground_dist_from_bord
@@ -95,10 +101,12 @@ function love.update(dt)
 		ball:updatePosition(dt, paddle1, paddle2, playground)
 		if ball:outL(playground) then
 			player2.score = player2.score + 1
+			sounds['point']:play()
 			enterReadyState()
 			serveState = 'player1'
 		elseif ball:outR(playground) then
 			player1.score = player1.score + 1
+			sounds['point']:play()
 			enterReadyState()
 			serveState = 'player2'
 		end
