@@ -43,7 +43,6 @@ function Ball:updatePosition(dt, paddle1, paddle2, playground)
 		self.x = paddle2.x - ((self.x + self.width) - paddle2.x)
 		self.dy = (self.dy / math.abs(self.dy)) * (math.random(1, 50) * 1.5)
 	end 
-
 end
 
 function Ball:collides(paddle)
@@ -56,6 +55,20 @@ function Ball:collides(paddle)
 	end
 
 	return true
+end
+
+function Ball:outL(playground)
+	if self.x < playground.x_min then
+		return true
+	end
+	return false
+end
+
+function Ball:outR(playground)
+	if (self.x + self.width) > playground.x_max then
+		return true
+	end
+	return false
 end
 
 function Ball:render()

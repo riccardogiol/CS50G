@@ -73,7 +73,7 @@ function love.load()
 		0,
 		0)
 
-	gameState = 'start'
+	gameState = 'ready'
 end
 
 function love.update(dt)
@@ -91,6 +91,13 @@ function love.update(dt)
 
 	if gameState == 'play' then
 		ball:updatePosition(dt, paddle1, paddle2, playground)
+		if ball:outL(playground) then
+			player2.score = player2.score + 1
+			enterReadyState()
+		elseif ball:outR(playground) then
+			player1.score = player1.score + 1
+			enterReadyState()
+		end
 	end
 end
 
@@ -100,16 +107,20 @@ function love.keypressed(key)
 		love.event.quit()
 	end
 
-	if (key == 'enter' or key == 'return') and gameState == 'start' then
+	if (key == 'enter' or key == 'return') and gameState == 'ready' then
 		ballDX = math.random(2) == 1 and 100 or -100
 		ballDY = math.random(-50, 50) * 1.5
 		ball:setSpeed(ballDX, ballDY)
 		gameState = 'play'
 	elseif (key == 'enter' or key == 'return') and gameState == 'play' then
-		ball:setPosition(virtual_width / 2 - 2, ((virtual_height - playground_dist_from_bord - (top_banner_high + playground_dist_from_bord)) / 2) + top_banner_high + playground_dist_from_bord - 2)
-		ball:setSpeed(0,0)
-		gameState = 'start'
+		enterReadyState()
 	end
+end
+
+function enterReadyState()
+	ball:setPosition(virtual_width / 2 - 2,  (playground_top + (playground_bottom - playground_top) / 2) - 2)
+	ball:setSpeed(0,0)
+	gameState = 'ready'
 end
 
 
@@ -136,7 +147,7 @@ function drawBanner()
 	love.graphics.setFont(smallFont)
 	love.graphics.printf(string.format("Hi, it's me %s!", my_name), 0, 5, virtual_width, 'center')
 
-	if gameState == 'start' then
+	if gameState == 'ready' then
 		love.graphics.printf("Ready to start!", 0, 15, virtual_width, 'center')
 	elseif gameState == 'play' then
 		love.graphics.printf("Play!", 0, 15, virtual_width, 'center')
