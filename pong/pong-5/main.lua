@@ -21,6 +21,8 @@ paddle_width = 5
 paddle_height = 30
 paddle_speed = 200
 
+max_score = 3
+
 Player = Class{}
 
 function Player:init(paddle, score)
@@ -73,8 +75,7 @@ function love.load()
 		0,
 		0)
 
-	gameState = 'ready'
-	serveState = 'nobody'
+	initialiseMatch()
 end
 
 function love.update(dt)
@@ -101,9 +102,15 @@ function love.update(dt)
 			enterReadyState()
 			serveState = 'player2'
 		end
+		if player1.score == max_score then
+			gameState = 'winner'
+			winner = 'player1'
+		elseif player2.score == max_score then
+			gameState = 'winner'
+			winner = 'player2'
+		end
 	end
 end
-
 
 function love.keypressed(key)
 	if key == 'escape' then
@@ -121,6 +128,8 @@ function love.keypressed(key)
 		ballDY = math.random(-50, 50) * 1.5
 		ball:setSpeed(ballDX, ballDY)
 		gameState = 'play'
+	elseif (key == 'enter' or key == 'return') and gameState == 'winner' then
+		initialiseMatch()
 	elseif (key == 'enter' or key == 'return') and gameState == 'play' then
 		enterReadyState()
 	end
@@ -131,6 +140,15 @@ function enterReadyState()
 	ball:setSpeed(0,0)
 	gameState = 'ready'
 end
+
+function initialiseMatch()
+	serveState = 'nobody'
+	winner = 'nobody'
+	player1.score = 0
+	player2.score = 0
+	gameState = 'ready'
+end
+
 
 
 function love.draw()
@@ -147,7 +165,9 @@ function love.draw()
 	paddle1:render()
 	paddle2:render()
 
-	ball:render()
+	if gameState ~= 'winner' then
+		ball:render()
+	end
 
 	push:apply('end')
 end
@@ -164,6 +184,11 @@ function drawBanner()
 		end
 	elseif gameState == 'play' then
 		love.graphics.printf("Play!", 0, 15, virtual_width, 'center')
+	elseif gameState == 'winner' then
+		love.graphics.setFont(scoreFont)
+	    love.graphics.printf(tostring(winner) .. " wins!!", 0, virtual_height/2 - 20, virtual_width, 'center')
+		love.graphics.setFont(smallFont)
+		love.graphics.printf("Press 'enter' to start a new game, 'esc' to exit", 0, virtual_height/2 + 20, virtual_width, 'center')
 	end
 
 	love.graphics.setFont(scoreFont)
