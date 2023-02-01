@@ -21,6 +21,13 @@ paddle_width = 5
 paddle_height = 30
 paddle_speed = 200
 
+Player = Class{}
+
+function Player:init(paddle, score)
+	self.paddle = paddle
+	self.score = score 
+end
+
 function love.load()
 	love.graphics.setDefaultFilter('nearest', 'nearest')
 	love.window.setTitle('Pong by RG')
@@ -33,10 +40,13 @@ function love.load()
 	push:setupScreen(virtual_width, virtual_height, window_width, window_hight, {fullscreen = false, resizable = false, vsync = true})
 
 	--initialize game variables
-	playground = Playground(0, virtual_width, top_banner_high + playground_dist_from_bord, virtual_height - playground_dist_from_bord, 1)
-
-	p1score = 0
-	p2score = 0
+	playground_top = top_banner_high + playground_dist_from_bord
+	playground_bottom = virtual_height - playground_dist_from_bord
+	playground = Playground(0,
+		virtual_width,
+		playground_top,
+		playground_bottom,
+		1)
 
 	paddle1 = Paddle(paddle_dist_from_bord,
 		top_banner_high+playground_dist_from_bord +10,
@@ -53,8 +63,11 @@ function love.load()
 		top_banner_high + playground_dist_from_bord,
 		virtual_height - playground_dist_from_bord)
 
+	player1 = Player(paddle1, 0)
+	player2 = Player(paddle2, 0)
+
 	ball = Ball(virtual_width / 2 - 2,
-		((virtual_height - playground_dist_from_bord - (top_banner_high + playground_dist_from_bord)) / 2) + top_banner_high + playground_dist_from_bord - 2, 
+		(playground_top + (playground_bottom - playground_top) / 2) - 2, 
 		4,
 		4, 
 		0,
@@ -122,6 +135,7 @@ end
 function drawBanner()
 	love.graphics.setFont(smallFont)
 	love.graphics.printf(string.format("Hi, it's me %s!", my_name), 0, 5, virtual_width, 'center')
+
 	if gameState == 'start' then
 		love.graphics.printf("Ready to start!", 0, 15, virtual_width, 'center')
 	elseif gameState == 'play' then
@@ -129,8 +143,8 @@ function drawBanner()
 	end
 
 	love.graphics.setFont(scoreFont)
-	love.graphics.printf(tostring(p1score), 0, 5, virtual_width / 2 - 30, 'center')
-	love.graphics.printf(tostring(p2score), virtual_width / 2 + 30, 5, virtual_width / 2 - 30, 'center')
+	love.graphics.printf(tostring(player1.score), 0, 5, virtual_width / 2 - 30, 'center')
+	love.graphics.printf(tostring(player2.score), virtual_width / 2 + 30, 5, virtual_width / 2 - 30, 'center')
 end
 
 function displayFPS()
