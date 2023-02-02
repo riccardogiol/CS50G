@@ -2,7 +2,7 @@ push = require 'push'
 Class = require 'class'
 
 require 'GroundImage'
---require 'Bird'
+require 'Bird'
 --require 'Pipe'
 
 window_width = 1280
@@ -27,6 +27,9 @@ function love.load()
 	background = GroundImage('images/background.png', 30, 413, 0, 0)
 	foreground = GroundImage('images/ground.png', 60, virtual_width, 0, virtual_height-16)
 	--initiate bird
+	bird = Bird('images/bird.png', virtual_width/2, virtual_height/2, 300, 180)
+
+	love.keyboard.keypressed = {}
 end
 
 function love.resize(w, h)
@@ -34,8 +37,19 @@ function love.resize(w, h)
 end
 
 function love.keypressed(key)
+	love.keyboard.keypressed[key] = true
+
 	if key == 'escape' then
 		love.event.quit()
+	end
+end
+
+function love.keyboard.wasPressed(key)
+	if love.keyboard.keypressed[key] then
+		love.keyboard.keypressed[key] = false
+		return true
+	else
+		return false
 	end
 end
 
@@ -44,7 +58,8 @@ function love.update(dt)
 	--update images position 
 	background:updatePosition(dt)
 	foreground:updatePosition(dt)
-	--update
+	--update bird position
+	bird:updatePosition(dt)
 end
 
 function love.draw()
@@ -52,5 +67,7 @@ function love.draw()
 	--draw image
 	background:render()
 	foreground:render()
+	bird:render()
+
 	push:finish()
 end
