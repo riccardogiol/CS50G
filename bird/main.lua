@@ -14,6 +14,7 @@ virtual_height = 288
 local pipes = {}
 local pipe_image = love.graphics.newImage('images/pipe.png')
 pipe_offset = 100
+number_of_pipes = 0
 
 function love.load()
 	love.graphics.setDefaultFilter('nearest', 'nearest')
@@ -71,13 +72,20 @@ function love.update(dt)
 		newPipe = Pipe(pipe_image, virtual_width, new_y, 60)
 		table.insert(pipes, newPipe)
 	end
+
 	--update pipes position and delete if no more visible
+	number_of_pipes = 0
 	for k, pipe in pairs(pipes) do
 		pipe:updatePosition(dt)
+		number_of_pipes = number_of_pipes + 1
+	end
+	--remove the pipe on the left out of the update cycle otherwise glitch
+	for k, pipe in pairs(pipes) do
 		if pipe:isOutL() then
 			table.remove(pipes, k)
 		end
 	end
+
 end
 
 function lastPipeDistance()
@@ -100,6 +108,7 @@ function love.draw()
 	for k, pipe in pairs(pipes) do
 		pipe:render()
 	end
+	--love.graphics.print(tostring(number_of_pipes), 0, 0)
 
 	push:finish()
 end
