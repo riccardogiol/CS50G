@@ -4,6 +4,7 @@ Class = require 'class'
 require 'StateMachine'
 
 require 'states/BaseState'
+require 'states/TitleState'
 require 'states/PlayState'
 require 'states/ScoreState'
 
@@ -23,6 +24,7 @@ function love.load()
 	love.window.setTitle('Bird by RG')
 
 	smallFont = love.graphics.newFont('font.ttf', 8)
+	mediumFont = love.graphics.newFont('font.ttf', 16)
 	bigFont = love.graphics.newFont('font.ttf', 32)
 
 	push:setupScreen(virtual_width,
@@ -40,11 +42,12 @@ function love.load()
 	gPipes_pairs = {}
 
 	gStateMachine = StateMachine {
+		['title'] = function() return TitleState() end,
 		['score'] = function() return ScoreState() end,
 		['play'] = function() return PlayState() end,
 	}
 
-	gStateMachine:change('play')
+	gStateMachine:change('title')
 
 	love.keyboard.keypressed = {}
 end

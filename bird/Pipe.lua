@@ -38,6 +38,7 @@ function PipesPair:init(image, x_gap_top, y_gap_top, speed)
 	gap_height = 120
 	self.pipe_bottom = Pipe(image, x_gap_top, y_gap_top + gap_height, speed, false)
 	self.pipe_top = Pipe(image, x_gap_top, y_gap_top - image:getHeight(), speed, true)
+	self.scored = false
 end
 
 function PipesPair:updatePosition(dt)
