@@ -18,10 +18,15 @@ number_of_pipes = 0
 last_gap_y = virtual_height / 3
 y_max_gaps_difference = 70
 
+game_state = 'play'
+
 
 function love.load()
 	love.graphics.setDefaultFilter('nearest', 'nearest')
 	math.randomseed(os.time())
+
+	smallFont = love.graphics.newFont('font.ttf', 8)
+	bigFont = love.graphics.newFont('font.ttf', 32)
 
 	push:setupScreen(virtual_width,
 		virtual_height,
@@ -64,36 +69,46 @@ end
 
 
 function love.update(dt)
-	--update images position 
-	background:updatePosition(dt)
-	foreground:updatePosition(dt)
-	--update bird position
-	bird:updatePosition(dt)
-	--update pipes list
-	if lastPipeDistance() > pipe_offset then
-		gaps_difference = math.random(- y_max_gaps_difference, y_max_gaps_difference)
-		gaps_difference = math.max(gaps_difference, -40)
-		gaps_difference = math.min(gaps_difference, 40)
-		new_y = last_gap_y + gaps_difference
-		new_y = math.max(new_y, 30)
-		new_y = math.min(new_y, virtual_height - 30)
-		newPipesPair = PipesPair(pipe_image, virtual_width, new_y, 60)
-		table.insert(pipes_pairs, newPipesPair)
-	end
-
-	--update pipes position and delete if no more visible
-	number_of_pipes = 0
-	for k, pipes_pair in pairs(pipes_pairs) do
-		pipes_pair:updatePosition(dt)
-		number_of_pipes = number_of_pipes + 1
-	end
-	--remove the pipe on the left out of the update cycle otherwise glitch
-	for k, pipes_pair in pairs(pipes_pairs) do
-		if pipes_pair:isOutL() then
-			table.remove(pipes_pair, k)
+	if game_state == 'play' then
+		--update images position 
+		background:updatePosition(dt)
+		foreground:updatePosition(dt)
+		--update bird position
+		bird:updatePosition(dt)
+		if bird:collidesBorder(0 - 4, virtual_height - 16 + 4) then
+			game_state = 'game_over'
+		end
+		--update pipes list
+		if lastPipeDistance() > pipe_offset then
+			addPipe()
+		end
+		--update pipes pairs position 
+		number_of_pipes = 0
+		for k, pipes_pair in pairs(pipes_pairs) do
+			pipes_pair:updatePosition(dt)
+			number_of_pipes = number_of_pipes + 1
+			if bird:collides(pipes_pair) then
+				game_state = 'game_over'
+			end
+		end
+		--remove the pipes pair on the left out of the update cycle otherwise glitch
+		for k, pipes_pair in pairs(pipes_pairs) do
+			if pipes_pair:isOutL() then
+				table.remove(pipes_pair, k)
+			end
 		end
 	end
+end
 
+function addPipe()
+	gaps_difference = math.random(- y_max_gaps_difference, y_max_gaps_difference)
+	gaps_difference = math.max(gaps_difference, -40)
+	gaps_difference = math.min(gaps_difference, 40)
+	new_y = last_gap_y + gaps_difference
+	new_y = math.max(new_y, 30)
+	new_y = math.min(new_y, virtual_height - 30)
+	newPipesPair = PipesPair(pipe_image, virtual_width, new_y, 60)
+	table.insert(pipes_pairs, newPipesPair)
 end
 
 function lastPipeDistance()
@@ -116,7 +131,19 @@ function love.draw()
 	for k, pipes_pair in pairs(pipes_pairs) do
 		pipes_pair:render()
 	end
-	--love.graphics.print(tostring(number_of_pipes), 0, 0)
 
+	if game_state == 'game_over' then
+		love.graphics.setFont(bigFont)
+		love.graphics.printf('GAME OVER', 0, virtual_height/2 - 16, virtual_width, 'center')
+	end
+
+
+	displayFPS()
 	push:finish()
 end
+
+function displayFPS()
+	love.graphics.setFont(smallFont)
+	love.graphics.print('FPS ' .. tostring(love.timer.getFPS()), 5, 5)
+end
+

@@ -6,6 +6,8 @@ function Pipe:init(image, x, y, speed, flipped)
 	self.y = y 
 	self.speed = speed
 	self.flipped = flipped
+	self.width = image:getWidth()
+	self.height = image:getHeight()
 end
 
 function Pipe:updatePosition(dt)
@@ -13,7 +15,7 @@ function Pipe:updatePosition(dt)
 end
 
 function Pipe:isOutL()
-	if (self.x + self.image:getWidth()) < 0 then
+	if (self.x + self.width) < 0 then
 		return true
 	end
 	return false
@@ -21,7 +23,7 @@ end
 
 function Pipe:render()
 	if self.flipped then
-		love.graphics.draw(self.image, self.x, self.y + self.image:getHeight(), 0, 1, -1)
+		love.graphics.draw(self.image, self.x, self.y + self.height, 0, 1, -1)
 	else
 		love.graphics.draw(self.image, self.x, self.y)
 	end
