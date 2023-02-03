@@ -1,5 +1,7 @@
 Pipe = Class{}
 
+pipe_image = love.graphics.newImage('images/pipe.png')
+
 function Pipe:init(image, x, y, speed, flipped)
 	self.image = image
 	self.x = x 

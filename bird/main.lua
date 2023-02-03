@@ -1,6 +1,12 @@
 push = require 'push'
 Class = require 'class'
 
+require 'StateMachine'
+
+require 'states/BaseState'
+require 'states/PlayState'
+require 'states/ScoreState'
+
 require 'GroundImage'
 require 'Bird'
 require 'Pipe'
@@ -11,19 +17,10 @@ window_height = 720
 virtual_width = 512
 virtual_height = 288
 
-local pipes_pairs = {}
-local pipe_image = love.graphics.newImage('images/pipe.png')
-pipe_offset = 120
-number_of_pipes = 0
-last_gap_y = virtual_height / 3
-y_max_gaps_difference = 70
-
-game_state = 'play'
-
-
 function love.load()
 	love.graphics.setDefaultFilter('nearest', 'nearest')
 	math.randomseed(os.time())
+	love.window.setTitle('Bird by RG')
 
 	smallFont = love.graphics.newFont('font.ttf', 8)
 	bigFont = love.graphics.newFont('font.ttf', 32)
@@ -36,12 +33,18 @@ function love.load()
 		resizable = true,
 		vsync = true})
 
-	--initiate images with speed
-	background = GroundImage('images/background.png', 30, 413, 0, 0)
-	foreground = GroundImage('images/ground.png', 60, virtual_width, 0, virtual_height-16)
-	--initiate bird
-	bird = Bird('images/bird.png', virtual_width/2, virtual_height/2, 300, 150)
-	--initiate pipes
+	--initiate global objects of the game 
+	gBackground = GroundImage('images/background.png', 30, 413, 0, 0)
+	gForeground = GroundImage('images/ground.png', 60, virtual_width, 0, virtual_height-16)	
+	gBird = Bird('images/bird.png', virtual_width/2, virtual_height/2, 300, 150)
+	gPipes_pairs = {}
+
+	gStateMachine = StateMachine {
+		['score'] = function() return ScoreState() end,
+		['play'] = function() return PlayState() end,
+	}
+
+	gStateMachine:change('play')
 
 	love.keyboard.keypressed = {}
 end
@@ -69,74 +72,13 @@ end
 
 
 function love.update(dt)
-	if game_state == 'play' then
-		--update images position 
-		background:updatePosition(dt)
-		foreground:updatePosition(dt)
-		--update bird position
-		bird:updatePosition(dt)
-		if bird:collidesBorder(0 - 4, virtual_height - 16 + 4) then
-			game_state = 'game_over'
-		end
-		--update pipes list
-		if lastPipeDistance() > pipe_offset then
-			addPipe()
-		end
-		--update pipes pairs position 
-		number_of_pipes = 0
-		for k, pipes_pair in pairs(pipes_pairs) do
-			pipes_pair:updatePosition(dt)
-			number_of_pipes = number_of_pipes + 1
-			if bird:collides(pipes_pair) then
-				game_state = 'game_over'
-			end
-		end
-		--remove the pipes pair on the left out of the update cycle otherwise glitch
-		for k, pipes_pair in pairs(pipes_pairs) do
-			if pipes_pair:isOutL() then
-				table.remove(pipes_pair, k)
-			end
-		end
-	end
-end
-
-function addPipe()
-	gaps_difference = math.random(- y_max_gaps_difference, y_max_gaps_difference)
-	gaps_difference = math.max(gaps_difference, -40)
-	gaps_difference = math.min(gaps_difference, 40)
-	new_y = last_gap_y + gaps_difference
-	new_y = math.max(new_y, 30)
-	new_y = math.min(new_y, virtual_height - 30)
-	newPipesPair = PipesPair(pipe_image, virtual_width, new_y, 60)
-	table.insert(pipes_pairs, newPipesPair)
-end
-
-function lastPipeDistance()
-	x_max = 0
-	for k, pipes_pair in pairs(pipes_pairs) do
-		if pipes_pair.pipe_bottom.x > x_max then
-			x_max = pipes_pair.pipe_bottom.x 
-		end
-	end
-
-	return virtual_width - x_max
+	gStateMachine.current:update(dt)
 end
 
 function love.draw()
 	push:start()
 	--draw image
-	background:render()
-	foreground:render()
-	bird:render()
-	for k, pipes_pair in pairs(pipes_pairs) do
-		pipes_pair:render()
-	end
-
-	if game_state == 'game_over' then
-		love.graphics.setFont(bigFont)
-		love.graphics.printf('GAME OVER', 0, virtual_height/2 - 16, virtual_width, 'center')
-	end
-
+	gStateMachine.current:render()
 
 	displayFPS()
 	push:finish()
