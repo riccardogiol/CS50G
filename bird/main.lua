@@ -7,6 +7,7 @@ require 'states/BaseState'
 require 'states/TitleState'
 require 'states/PlayState'
 require 'states/ScoreState'
+require 'states/CountdownState'
 
 require 'GroundImage'
 require 'Bird'
@@ -43,6 +44,7 @@ function love.load()
 
 	gStateMachine = StateMachine {
 		['title'] = function() return TitleState() end,
+		['countdown'] = function() return CountdownState() end,
 		['score'] = function() return ScoreState() end,
 		['play'] = function() return PlayState() end,
 	}
