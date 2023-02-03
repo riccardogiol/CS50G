@@ -14,6 +14,7 @@ end
 function Bird:updatePosition(dt)
 	if love.keyboard.wasPressed('space') then
 		self.speed = - self.rebounce
+    	gSounds['jump']:play()
 	end
 
 	self.speed = self.speed + self.acceleration * dt
@@ -22,6 +23,7 @@ end
 
 function Bird:collidesBorder(y_min, y_max)
 	if self.y < y_min or (self.y + self.height) > y_max then
+    	gSounds['explosion']:play()
 		return true
 	end
 	return false
@@ -29,8 +31,10 @@ end
 
 function Bird:collides(pipes_pair)
 	if self:collidesPipe(pipes_pair.pipe_bottom) then
+    	gSounds['hurt']:play()
 		return true
 	elseif self:collidesPipe(pipes_pair.pipe_top) then
+    	gSounds['hurt']:play()
 		return true
 	end
 	return false

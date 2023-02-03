@@ -36,6 +36,14 @@ function love.load()
 		resizable = true,
 		vsync = true})
 
+	gSounds = {
+        ['jump'] = love.audio.newSource('sounds/jump.wav', 'static'),
+        ['explosion'] = love.audio.newSource('sounds/explosion.wav', 'static'),
+        ['hurt'] = love.audio.newSource('sounds/hurt.wav', 'static'),
+        ['score'] = love.audio.newSource('sounds/score.wav', 'static'),
+        ['music'] = love.audio.newSource('sounds/marios_way.mp3', 'static')
+    }
+
 	--initiate global objects of the game 
 	gBackground = GroundImage('images/background.png', 30, 413, 0, 0)
 	gForeground = GroundImage('images/ground.png', 60, virtual_width, 0, virtual_height-16)	
@@ -48,6 +56,10 @@ function love.load()
 		['score'] = function() return ScoreState() end,
 		['play'] = function() return PlayState() end,
 	}
+
+    gSounds['music']:setLooping(true)
+    gSounds['music']:setVolume(0.3)
+    gSounds['music']:play()
 
 	gStateMachine:change('title')
 

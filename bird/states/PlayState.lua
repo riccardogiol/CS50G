@@ -52,6 +52,7 @@ function PlayState:update(dt)
 			if gBird.x > (pipes_pair.pipe_bottom.x + pipes_pair.pipe_bottom.width) then
 				self.score = self.score + 1 
 				pipes_pair.scored = true
+    			gSounds['score']:play()
 			end
 		end
 	end
