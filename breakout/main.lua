@@ -10,10 +10,12 @@ function love.load()
 		fullscreen = false
 	})
 
+	-- load media
+
 	gFonts = {
 		['small'] = love.graphics.newFont('fonts/font.ttf', 8),
 		['medium'] = love.graphics.newFont('fonts/font.ttf', 16),
-		['big'] = love.graphics.newFont('fonts/font.ttf', 32)
+		['large'] = love.graphics.newFont('fonts/font.ttf', 32)
 	}
 
 	gTextures = {
@@ -39,6 +41,14 @@ function love.load()
         ['music'] = love.audio.newSource('sounds/music.wav', 'static')
     }
 
+    -- load play objects
+    background = PlacedImage(gTextures['background'], 0, 0, VIRTUAL_WIDTH, VIRTUAL_HEIGHT)
+
+    gStateMachine = StateMachine({
+    	['start'] = function() return StartState() end
+    })
+
+    gStateMachine:change('start')
 
 end
 
@@ -53,6 +63,10 @@ function love.keypressed(key) end
 
 function love.draw() 
 	push:start()
+
+	background:render()
+	gStateMachine:render()
+
 	displayFPS()
 
 	push:finish()
