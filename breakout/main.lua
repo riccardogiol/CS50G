@@ -50,6 +50,8 @@ function love.load()
 
     gStateMachine:change('start')
 
+    love.keyboard.keyPressed = {}
+
 end
 
 function love.resize(w, h)
@@ -57,9 +59,20 @@ function love.resize(w, h)
 end
 
 function love.update(dt)
+	gStateMachine:update(dt)
+	love.keyboard.keyPressed = {}
 end
 
-function love.keypressed(key) end
+function love.keypressed(key)
+	love.keyboard.keyPressed[key] = true
+end
+
+function love.keyboard.wasPressed(key)
+	if love.keyboard.keyPressed[key] then
+		return true
+	end
+	return false
+end
 
 function love.draw() 
 	push:start()
