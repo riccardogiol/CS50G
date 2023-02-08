@@ -1,15 +1,15 @@
 Paddle = Class{}
 
-function Paddle:init(image, x_start, y_start, speed)
-	self.image = image 
+function Paddle:init(quad, width, height, x_start, y_start, speed)
+	self.quad = quad 
+	self.width = width
+	self.height = height
 	self.x = x_start
 	self.y = y_start 
 	self.speed = speed
-	self.width = self.image:getWidth()
-	self.height = self.image:getHeight()
 end
 
-function Paddle:update(dt, direction)
+function Paddle:updatePosition(dt, direction)
 	if direction == 'right' then
 		next_x = self.x + self.speed*dt
 		self.x = math.min(next_x, VIRTUAL_WIDTH - self.width)
@@ -20,5 +20,5 @@ function Paddle:update(dt, direction)
 end
 
 function Paddle:render()
-	love.graphics.draw(self.image, self.x, self.y)
+	love.graphics.draw(gTextures['main'], self.quad, self.x, self.y)
 end

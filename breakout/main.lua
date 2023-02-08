@@ -4,6 +4,8 @@ function love.load()
 	love.graphics.setDefaultFilter('nearest', 'nearest')
 	love.window.setTitle('Breakout by RG')
 
+	math.randomseed(os.time())
+
 	push:setupScreen(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT, {
 		vsync = true, 
 		resizable = true,
@@ -45,7 +47,9 @@ function love.load()
     background = PlacedImage(gTextures['background'], 0, 0, VIRTUAL_WIDTH, VIRTUAL_HEIGHT)
 
     gStateMachine = StateMachine({
-    	['start'] = function() return StartState() end
+    	['start'] = function() return StartState() end,
+    	['play'] = function() return PlayState() end,
+    	['highscore'] = function() return HighscoreState() end
     })
 
     gStateMachine:change('start')
