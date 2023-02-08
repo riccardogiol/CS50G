@@ -44,3 +44,22 @@ function GenerateBallQuads(atlas)
 	end
 	return quads
 end
+
+function GenerateBrickQuads(atlas)
+	local width = 32
+	local height = 16
+	local quads = {}
+	local count = 0
+
+	for j = 0, 2 do
+		for i = 0, 5 do
+			quads[count] = QuadSpec(love.graphics.newQuad(i * width, j * height, width, height, atlas:getDimensions()), width, height)
+			count = count + 1
+		end
+	end 
+	for i = 0, 2 do
+		quads[count] = QuadSpec(love.graphics.newQuad(i * width, 48, width, height, atlas:getDimensions()), width, height)
+		count = count + 1
+	end
+	return quads
+end

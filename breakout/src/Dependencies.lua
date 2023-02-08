@@ -7,6 +7,7 @@ require 'src/Util'
 require 'src/PlacedImage'
 require 'src/Paddle'
 require 'src/Ball'
+require 'src/Brick'
 
 require 'src/StateMachine'
 require 'src/states/BaseState'

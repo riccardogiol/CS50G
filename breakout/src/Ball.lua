@@ -13,17 +13,17 @@ end
 function Ball:updatePosition(dt)
 	self.x = self.x + self.dx * dt
 	if self.x < 0 then
-		self.x = self.x + self.width
+		self.x = - self.x 
 		self.dx = - self.dx
 		gSounds['wall-hit']:play()
 	elseif (self.x + self.width) > VIRTUAL_WIDTH then
-		self.x = self.x - self.width
+		self.x = 2 * VIRTUAL_WIDTH - self.x  - 2 * self.width
 		self.dx = - self.dx
 		gSounds['wall-hit']:play()
 	end
 	self.y = self.y + self.dy * dt
 	if self.y < 0 then
-		self.y = self.y + self.height
+		self.y = - self.y
 		self.dy = - self.dy
 		gSounds['wall-hit']:play()
 	end
@@ -40,22 +40,22 @@ function Ball:collides(target)
 end
 
 function Ball:updatePositionCollides(target)
-	if self.x < target.x then
-		self.x = self.x - self.width
+	if self.x < target.x and self.dx > 0 then
+		self.x = 2 * target.x - self.x - 2 * self.width
 		self.dx = - self.dx
 		gSounds['paddle-hit']:play()
-	elseif self.x > (target.x + target.width) then
-		self.x = self.x + self.width
+	elseif (((self.x + self.width) > (target.x + target.width)) and self.dx < 0) then
+		self.x = 2 * target.x + 2 * target.width - self.x
 		self.dx = - self.dx
-		gSounds['paddel-hit']:play()
-	elseif self.y < target.y then
-		self.y = self.y - self.height
+		gSounds['paddle-hit']:play()
+	elseif self.y < target.y and self.dy > 0 then
+		self.y = 2 * target.y - 2 * self.height - self.y
 		self.dy = - self.dy
 		gSounds['paddle-hit']:play()
-	elseif self.y > (target.y + target.height) then
-		self.y = self.y + self.height
+	else
+		self.y = 2 * target.y + target.width - self.y
 		self.dy = - self.dy
-		gSounds['paddel-hit']:play()
+		gSounds['paddle-hit']:play()
 	end
 end
 
