@@ -59,6 +59,14 @@ function Ball:updatePositionCollides(target)
 	end
 end
 
+function Ball:updateSpeedPaddleCollision(paddle)
+	if (self.x < paddle.x + (paddle.width/2)) and self.dx > 0 then
+		self.dx = self.dx - 50 - (8 * (paddle.x + paddle.width/2 - self.x))
+	elseif (self.x > paddle.x + (paddle.width/2)) and self.dx < 0 then
+		self.dx = self.dx + 50 + (8 * (self.x - paddle.x - paddle.width/2))
+	end
+end
+
 
 function Ball:render()
 	love.graphics.draw(gTextures['main'], self.quad, self.x, self.y)

@@ -45,6 +45,7 @@ function PlayState:update(dt)
 	self.ball:updatePosition(dt)
 	if self.ball:collides(self.paddle) then
 		self.ball:updatePositionCollides(self.paddle)
+		self.ball:updateSpeedPaddleCollision(self.paddle)
 	end
 	for j = 0, 3 do
 		for i = 0, 4 do
