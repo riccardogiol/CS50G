@@ -27,8 +27,7 @@ function PlayState:update(dt)
 			if brick.inPlay then
 				if self.ball:collides(brick) then
 					self.ball:updatePositionCollides(brick)
-					self.bricks[j][i].inPlay = false
-					self.score = self.score + self.bricks[j][i].score 
+					self.score = self.score + brick:hit()
 				end
 			end
 		end

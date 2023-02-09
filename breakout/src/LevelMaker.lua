@@ -26,7 +26,7 @@ function LevelMaker.createMap()
 							color = color1
 						end
 					end
-					brick_row[i] = Brick(brick_quads[color].quad, w, h, x, h*j + 16)
+					brick_row[i] = Brick(brick_quads[color].quad, w, h, x, h*j + 16, color)
 				end
 			else
 				if noUnpairBrick == false then
@@ -37,7 +37,7 @@ function LevelMaker.createMap()
 							color = color1
 						end
 					end
-					brick_row[i] = Brick(brick_quads[color].quad, w, h, x, h*j + 16)
+					brick_row[i] = Brick(brick_quads[color].quad, w, h, x, h*j + 16, color)
 				end
 			end
 		end
