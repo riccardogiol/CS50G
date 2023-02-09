@@ -17,3 +17,20 @@ function LevelMaker.createMap()
 	end
 	return bricks
 end
+
+function LevelMaker.createPaddle()
+	local paddle_quads = GeneratePaddleQuads(gTextures['main'])
+	local color = math.random(0, 3)
+	local difficulty = 1
+	local w, h = paddle_quads[color][difficulty]:getQuadDimensions()
+	local paddle = Paddle(paddle_quads[color][difficulty].quad, w, h, (VIRTUAL_WIDTH - w)/2, VIRTUAL_HEIGHT - 32, 250)
+	return paddle
+end
+
+function LevelMaker.createBall()
+	local ball_quads = GenerateBallQuads(gTextures['main'])
+	local color = math.random(0, 6)
+	local w, h = ball_quads[color]:getQuadDimensions()
+	local ball = Ball(ball_quads[color].quad, w, h, (VIRTUAL_WIDTH - w)/2, VIRTUAL_HEIGHT - 40, 0, 0)
+	return ball
+end

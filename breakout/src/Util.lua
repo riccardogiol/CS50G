@@ -39,7 +39,7 @@ function GenerateBallQuads(atlas)
 	x = 96
 	y = y + ballDimension
 	for i = 4, 6 do
-		quads[i] = QuadSpec(love.graphics.newQuad(x+ballDimension, y, ballDimension, ballDimension, atlas:getDimensions()), ballDimension, ballDimension)
+		quads[i] = QuadSpec(love.graphics.newQuad(x, y, ballDimension, ballDimension, atlas:getDimensions()), ballDimension, ballDimension)
 		x = x + ballDimension
 	end
 	return quads
@@ -63,3 +63,34 @@ function GenerateBrickQuads(atlas)
 	end
 	return quads
 end
+
+function GenerateHeartsQuads(atlas)
+	local width = 10
+	local height = 9
+	local quads = {}
+
+	quads[0] = QuadSpec(love.graphics.newQuad(128, 48, width, height, atlas:getDimensions()), width, height)
+	quads[1] = QuadSpec(love.graphics.newQuad(128 + width, 48, width, height, atlas:getDimensions()), width, height)
+	return quads
+end
+
+function renderHealth(hearts, maxHearts)
+	local heartQuads = GenerateHeartsQuads(gTextures['main'])
+	for i = 1, maxHearts do
+		if hearts > 0 then
+			quad = heartQuads[0]
+			hearts = hearts - 1
+		else
+			quad = heartQuads[1]
+		end
+		love.graphics.draw(gTextures['main'], quad.quad, VIRTUAL_WIDTH - (quad.width + 2)*i, 2)
+	end
+end
+
+function renderScore(score)
+	love.graphics.setFont(gFonts['small'])
+	love.graphics.setColor(1, 1, 1, 1)
+	love.graphics.printf('Score: ' .. tostring(score), 0, 13, VIRTUAL_WIDTH, 'right')
+end
+
+

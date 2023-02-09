@@ -15,7 +15,13 @@ function StartState:update(dt)
 
 	if (love.keyboard.wasPressed('enter') or love.keyboard.wasPressed('return')) then
 		if self.highlight == 1 then
-			gStateMachine:change('play')
+			gStateMachine:change('serve', {
+				ball = LevelMaker.createBall(), 
+				bricks = LevelMaker.createMap(), 
+				paddle = LevelMaker.createPaddle(),
+				lives = 3,
+				score = 0
+			})
 		elseif self.highlight == 2 then
 			gStateMachine:change('highscore')
 		end

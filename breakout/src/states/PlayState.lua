@@ -1,25 +1,14 @@
-PlayState = Class{}
+PlayState = Class{__includes = BaseState}
 
-function PlayState:init()
+function PlayState:init() end 
 
-	local paddle_quads = GeneratePaddleQuads(gTextures['main'])
-	color = math.random(0, 3)
-	difficulty = 1
-	w, h = paddle_quads[color][difficulty]:getQuadDimensions()
-	self.paddle = Paddle(paddle_quads[color][difficulty].quad, w, h, (VIRTUAL_WIDTH - w)/2, VIRTUAL_HEIGHT - 32, 250)
-	
-	local ball_quads = GenerateBallQuads(gTextures['main'])
-	color = math.random(0, 6)
-	w, h = ball_quads[color]:getQuadDimensions()
-	dx = math.random(-200, 200)
-	dy = math.random(-50, -60)
-	self.ball = Ball(ball_quads[color].quad, w, h, (VIRTUAL_WIDTH - w)/2, VIRTUAL_HEIGHT - 41, dx, dy)
-
-	self.bricks = LevelMaker.createMap()
-
+function PlayState:enter(enterParams)
+	self.ball = enterParams.ball
+	self.bricks = enterParams.bricks
+	self.paddle = enterParams.paddle
+	self.lives = enterParams.lives
+	self.score = enterParams.score
 end 
-
-function PlayState:enter() end 
 
 function PlayState:update(dt)
 	if love.keyboard.isDown('left') then
@@ -39,8 +28,30 @@ function PlayState:update(dt)
 				if self.ball:collides(brick) then
 					self.ball:updatePositionCollides(brick)
 					self.bricks[j][i].inPlay = false
+					self.score = self.score + self.bricks[j][i].score 
 				end
 			end
+		end
+	end
+
+	if self.ball.y > VIRTUAL_HEIGHT then
+		self.lives = self.lives - 1
+		if self.lives < 0 then
+			gStateMachine:change('gameover', {
+				paddle = self.paddle,
+				ball = self.ball, 
+				bricks = self.bricks, 
+				lives = self.lives,
+				score = self.score
+			})
+		else
+			gStateMachine:change('serve', {
+				paddle = self.paddle,
+				ball = self.ball, 
+				bricks = self.bricks, 
+				lives = self.lives,
+				score = self.score
+			})
 		end
 	end
 
@@ -59,5 +70,7 @@ function PlayState:render()
 			end
 		end
 	end
+	renderHealth(self.lives, 3)
+	renderScore(self.score)
 end 
 function PlayState:exit() end 

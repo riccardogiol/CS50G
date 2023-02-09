@@ -7,6 +7,7 @@ function Brick:init(quad, width, height, x, y)
 	self.x = x
 	self.y = y
 	self.inPlay = true
+	self.score = 25
 end
 
 function Brick:updatePosition(dt)
