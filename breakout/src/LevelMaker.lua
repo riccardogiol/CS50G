@@ -14,7 +14,9 @@ function LevelMaker.createMap(level)
 		local color1 = math.random(0, math.min(math.floor(4*levelFactor), 4)) * 4 + strip1
 		local color2 = math.random(0, math.min(math.floor(4*levelFactor), 4)) * 4 + strip2
 		local color = color1
-		local score = 25 + strip1*5
+		local score = 25
+		local score1 = score + strip1*5
+		local score2 = score + strip2*5
 		local doubleColor = math.random(0, 100) < 50
 		local noBrick = math.random(0, 100)
 		local noPairBrick = noBrick < 20
@@ -26,10 +28,10 @@ function LevelMaker.createMap(level)
 					if doubleColor then
 						if color == color1 then
 							color = color2
-							score = 25 + strip2*5
+							score = score2
 						else
 							color = color1
-							score = 25 + strip1*5
+							score = score1
 						end
 					end
 					brick_row[i] = Brick(brick_quads[color].quad, w, h, x, h*j + 16, color, score)
@@ -39,10 +41,10 @@ function LevelMaker.createMap(level)
 					if doubleColor then
 						if color == color1 then
 							color = color2
-							score = 25 + strip2*5
+							score = score2
 						else
 							color = color1
-							score = 25 + strip1*5
+							score = score1
 						end
 					end
 					brick_row[i] = Brick(brick_quads[color].quad, w, h, x, h*j + 16, color, score)

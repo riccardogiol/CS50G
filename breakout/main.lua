@@ -51,6 +51,7 @@ function love.load()
     gStateMachine = StateMachine({
     	['start'] = function() return StartState() end,
     	['serve'] = function() return ServeState() end,
+    	['entry'] = function() return EntryState() end,
     	['play'] = function() return PlayState() end,
     	['levelcomplete'] = function() return LevelCompleteState() end,
     	['highscore'] = function() return HighscoreState() end,

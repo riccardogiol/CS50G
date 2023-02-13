@@ -1,4 +1,4 @@
-HighscoreState = Class{}
+HighscoreState = Class{__includes = BaseState}
 
 function HighscoreState:init()
 	self.scores = loadHighScore()

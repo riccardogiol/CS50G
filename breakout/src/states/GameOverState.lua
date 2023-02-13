@@ -3,16 +3,22 @@ GameOverState = Class{__includes = BaseState}
 function GameOverState:init() end 
 
 function GameOverState:enter(enterParams) 
-	self.bricks = enterParams.bricks
-	self.paddle = enterParams.paddle
 	self.lives = enterParams.lives
 	self.score = enterParams.score
 	self.level = enterParams.level
+	self.scores = loadHighScore()
+	self.tenthScore = self.scores[10].score
 end 
 
 function GameOverState:update(dt)	
 	if love.keyboard.wasPressed('enter') or love.keyboard.wasPressed('return') then
-		gStateMachine:change('start')
+		if self.score > self.tenthScore then
+			gStateMachine:change('entry', {
+				score = self.score
+			})
+		else
+			gStateMachine:change('start')
+		end
 	end
 
 	if love.keyboard.wasPressed('escape') then
@@ -21,14 +27,6 @@ function GameOverState:update(dt)
 end
 
 function GameOverState:render() 
-	self.paddle:render()
-	for j, brick_row in pairs(self.bricks) do
-		for i, brick in pairs(brick_row) do
-			if brick.inPlay then
-				brick:render()
-			end
-		end
-	end
 	love.graphics.setFont(gFonts['large'])
 	love.graphics.setColor(1, 1, 1, 1)
 	love.graphics.printf("GAME OVER", 0, VIRTUAL_HEIGHT /2 - 40, VIRTUAL_WIDTH, 'center')
