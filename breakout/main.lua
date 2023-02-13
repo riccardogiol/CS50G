@@ -52,6 +52,7 @@ function love.load()
     	['start'] = function() return StartState() end,
     	['serve'] = function() return ServeState() end,
     	['entry'] = function() return EntryState() end,
+    	['paddle'] = function() return PaddleState() end,
     	['play'] = function() return PlayState() end,
     	['levelcomplete'] = function() return LevelCompleteState() end,
     	['highscore'] = function() return HighscoreState() end,
