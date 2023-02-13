@@ -13,7 +13,7 @@ function LevelCompleteState:update(dt)
 	if love.keyboard.wasPressed('enter') or love.keyboard.wasPressed('return') then
 		gStateMachine:change('serve', {
 			ball = LevelMaker.createBall(), 
-			bricks = LevelMaker.createMap(), 
+			bricks = LevelMaker.createMap(self.level + 1), 
 			paddle = self.paddle, 
 			lives = self.lives,
 			score = self.score,

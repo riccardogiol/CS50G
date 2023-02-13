@@ -1,16 +1,20 @@
 LevelMaker = Class{}
 
-function LevelMaker.createMap()
+function LevelMaker.createMap(level)
 	local bricks = {}
 	local brick_quads = GenerateBrickQuads(gTextures['main'])
 	local w, h = brick_quads[0]:getQuadDimensions()
-	local numRows = math.random(4, 7)
-	local numCols = math.random(3, 6)*2 + 1
+	local levelFactor = level/4
+	local numRows = math.random(math.min(math.ceil(5*levelFactor), 5), math.min(math.ceil(7*levelFactor), 7))
+	local numCols = math.random(math.min(math.ceil(4*levelFactor), 4), math.min(math.ceil(6*levelFactor), 6))*2 + 1
 	for j = 0, numRows - 1 do
 		brick_row = {}
-		local color1 = math.random(0, 4) * 4
-		local color2 = math.random(0, 4) * 4
+		local strip1 = math.random(0, math.min(math.floor(3*levelFactor), 3))
+		local strip2 = math.random(0, math.min(math.floor(3*levelFactor), 3))
+		local color1 = math.random(0, math.min(math.floor(4*levelFactor), 4)) * 4 + strip1
+		local color2 = math.random(0, math.min(math.floor(4*levelFactor), 4)) * 4 + strip2
 		local color = color1
+		local score = 25 + strip1*5
 		local doubleColor = math.random(0, 100) < 50
 		local noBrick = math.random(0, 100)
 		local noPairBrick = noBrick < 20
@@ -22,22 +26,26 @@ function LevelMaker.createMap()
 					if doubleColor then
 						if color == color1 then
 							color = color2
+							score = 25 + strip2*5
 						else
 							color = color1
+							score = 25 + strip1*5
 						end
 					end
-					brick_row[i] = Brick(brick_quads[color].quad, w, h, x, h*j + 16, color)
+					brick_row[i] = Brick(brick_quads[color].quad, w, h, x, h*j + 16, color, score)
 				end
 			else
 				if noUnpairBrick == false then
 					if doubleColor then
 						if color == color1 then
 							color = color2
+							score = 25 + strip2*5
 						else
 							color = color1
+							score = 25 + strip1*5
 						end
 					end
-					brick_row[i] = Brick(brick_quads[color].quad, w, h, x, h*j + 16, color)
+					brick_row[i] = Brick(brick_quads[color].quad, w, h, x, h*j + 16, color, score)
 				end
 			end
 		end

@@ -16,14 +16,14 @@ colorsOnTable = {
 	[4] = 'gold'
 }
 
-function Brick:init(quad, width, height, x, y, pos)
+function Brick:init(quad, width, height, x, y, pos, score)
 	self.quad = quad 
 	self.width = width
 	self.height = height
 	self.x = x
 	self.y = y
 	self.inPlay = true
-	self.score = 25
+	self.score = score
 	self.posOnBrickTable = pos
 	self.color = colorsOnTable[math.floor(self.posOnBrickTable/4)]
 
