@@ -9,6 +9,7 @@ function ServeState:enter(enterParams)
 	self.lives = enterParams.lives
 	self.paddle.x = (VIRTUAL_WIDTH - self.paddle.width)/2
 	self.score = enterParams.score
+	self.level = enterParams.level
 end 
 
 function ServeState:update(dt)
@@ -29,7 +30,8 @@ function ServeState:update(dt)
 			bricks = self.bricks,
 			paddle = self.paddle,
 			lives = self.lives,
-			score = self.score
+			score = self.score,
+			level = self.level
 		})
 	end
 
@@ -55,9 +57,12 @@ function ServeState:render()
 			brick:renderParticles()
 		end
 	end
+	love.graphics.setFont(gFonts['large'])
+	love.graphics.setColor(1, 1, 1, 1)
+	love.graphics.printf("Level " .. tostring(self.level), 0, VIRTUAL_HEIGHT /2 - 20, VIRTUAL_WIDTH, 'center')
 	love.graphics.setFont(gFonts['medium'])
 	love.graphics.setColor(1, 1, 1, 1)
-	love.graphics.printf("Serve prerssing 'enter'", 0, VIRTUAL_HEIGHT /2 - 15, VIRTUAL_WIDTH, 'center')
+	love.graphics.printf("Serve prerssing 'enter'", 0, VIRTUAL_HEIGHT /2 + 5, VIRTUAL_WIDTH, 'center')
 	renderHealth(self.lives, 3)
 	renderScore(self.score)
 end 

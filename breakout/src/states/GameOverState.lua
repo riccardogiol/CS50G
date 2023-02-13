@@ -3,11 +3,11 @@ GameOverState = Class{__includes = BaseState}
 function GameOverState:init() end 
 
 function GameOverState:enter(enterParams) 
-	self.ball = LevelMaker.createBall()
 	self.bricks = enterParams.bricks
 	self.paddle = enterParams.paddle
 	self.lives = enterParams.lives
 	self.score = enterParams.score
+	self.level = enterParams.level
 end 
 
 function GameOverState:update(dt)	
@@ -31,11 +31,14 @@ function GameOverState:render()
 	end
 	love.graphics.setFont(gFonts['large'])
 	love.graphics.setColor(1, 1, 1, 1)
-	love.graphics.printf("GAME OVER", 0, VIRTUAL_HEIGHT /2 - 30, VIRTUAL_WIDTH, 'center')
+	love.graphics.printf("GAME OVER", 0, VIRTUAL_HEIGHT /2 - 40, VIRTUAL_WIDTH, 'center')
 
 	love.graphics.setFont(gFonts['medium'])
 	love.graphics.setColor(1, 1, 1, 1)
-	love.graphics.printf("Your score is " .. tostring(self.score), 0, VIRTUAL_HEIGHT /2 + 10, VIRTUAL_WIDTH, 'center')
+	love.graphics.printf("Level " .. tostring(self.level), 0, VIRTUAL_HEIGHT /2 , VIRTUAL_WIDTH, 'center')
+	love.graphics.setFont(gFonts['medium'])
+	love.graphics.setColor(1, 1, 1, 1)
+	love.graphics.printf("Your score is " .. tostring(self.score), 0, VIRTUAL_HEIGHT /2 + 20, VIRTUAL_WIDTH, 'center')
 	renderHealth(self.lives, 3)
 end 
 function GameOverState:exit() end 

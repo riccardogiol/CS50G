@@ -20,7 +20,8 @@ function StartState:update(dt)
 				bricks = LevelMaker.createMap(), 
 				paddle = LevelMaker.createPaddle(),
 				lives = 3,
-				score = 0
+				score = 0,
+				level = 1
 			})
 		elseif self.highlight == 2 then
 			gStateMachine:change('highscore')

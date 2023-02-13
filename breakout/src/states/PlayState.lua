@@ -8,6 +8,7 @@ function PlayState:enter(enterParams)
 	self.paddle = enterParams.paddle
 	self.lives = enterParams.lives
 	self.score = enterParams.score
+	self.level = enterParams.level
 end 
 
 function PlayState:update(dt)
@@ -22,9 +23,11 @@ function PlayState:update(dt)
 		self.ball:updatePositionCollides(self.paddle)
 		self.ball:updateSpeedPaddleCollision(self.paddle)
 	end
+	local noBricks = true
 	for j, brick_row in pairs(self.bricks) do
 		for i, brick in pairs(brick_row) do
 			if brick.inPlay then
+				noBricks = false
 				if self.ball:collides(brick) then
 					self.ball:updatePositionCollides(brick)
 					self.score = self.score + brick:hit()
@@ -33,16 +36,24 @@ function PlayState:update(dt)
 			brick:updateParticles(dt)
 		end
 	end
+	if noBricks then
+		gStateMachine:change('levelcomplete', {
+				paddle = self.paddle,
+				lives = self.lives,
+				score = self.score,
+				level = self.level
+			})
+	end
 
 	if self.ball.y > VIRTUAL_HEIGHT then
 		self.lives = self.lives - 1
 		if self.lives < 0 then
 			gStateMachine:change('gameover', {
-				paddle = self.paddle,
-				ball = self.ball, 
+				paddle = self.paddle, 
 				bricks = self.bricks, 
 				lives = self.lives,
-				score = self.score
+				score = self.score,
+				level = self.level
 			})
 		else
 			gStateMachine:change('serve', {
@@ -50,7 +61,8 @@ function PlayState:update(dt)
 				ball = self.ball, 
 				bricks = self.bricks, 
 				lives = self.lives,
-				score = self.score
+				score = self.score,
+				level = self.level
 			})
 		end
 	end
