@@ -93,4 +93,33 @@ function renderScore(score)
 	love.graphics.printf('Score: ' .. tostring(score), 0, 13, VIRTUAL_WIDTH, 'right')
 end
 
+function loadHighScore()
+	love.filesystem.setIdentity('breakout')
+	local filename = "breakout.lst"
+
+	if not love.filesystem.getInfo(filename) then
+		local scores = ''
+		for i = 0, 10 do
+			scores = scores .. "TBD," .. tostring((11-i)*150) .. "\n"
+		end
+
+		love.filesystem.write(filename, scores)
+	end
+
+	local scores = {}
+	local counter = 0
+
+	for line in love.filesystem.lines(filename) do
+		name = string.sub(line, 1, 3)
+		number = tonumber(string.sub(line, 5, -1))
+		scores[counter] = {
+			name = name,
+			score = number
+		}
+		counter = counter + 1
+	end
+
+	return scores
+end
+
 
