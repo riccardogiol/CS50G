@@ -30,6 +30,7 @@ function PlayState:update(dt)
 					self.score = self.score + brick:hit()
 				end
 			end
+			brick:updateParticles(dt)
 		end
 	end
 
@@ -67,6 +68,11 @@ function PlayState:render()
 			if brick.inPlay then
 				brick:render()
 			end
+		end
+	end
+	for j, brick_row in pairs(self.bricks) do
+		for i, brick in pairs(brick_row) do
+			brick:renderParticles()
 		end
 	end
 	renderHealth(self.lives, 3)

@@ -33,6 +33,12 @@ function ServeState:update(dt)
 		})
 	end
 
+	for j, brick_row in pairs(self.bricks) do
+		for i, brick in pairs(brick_row) do
+			brick:updateParticles(dt)
+		end
+	end
+
 	if love.keyboard.wasPressed('escape') then
 		love.event.quit()
 	end
@@ -46,6 +52,7 @@ function ServeState:render()
 			if brick.inPlay then
 				brick:render()
 			end
+			brick:renderParticles()
 		end
 	end
 	love.graphics.setFont(gFonts['medium'])
