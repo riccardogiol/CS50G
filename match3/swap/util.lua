@@ -48,7 +48,35 @@ function generateBoard(tileQuads, numRows, numCols, tileDim, numColr, numSymbl)
 	return board
 end
 
+function swapTiles(tile1row, tile1col, tile2row, tile2col)
+	auxTile1quad = board[tile1row][tile1col].quad
+	board[tile1row][tile1col].quad = board[tile2row][tile2col].quad
+	board[tile2row][tile2col].quad = auxTile1quad
+end
 
+function tweenTiles(tile1row, tile1col, tile2row, tile2col)
+	tile1ref = board[tile1row][tile1col]
+	tile1val = Tile(tile1ref.quad, tile1ref.x, tile1ref.y, tile1ref.w, tile1ref.h)
+	tile2ref = board[tile2row][tile2col]
+	selector.blocked = true
+	Timer.tween(0.5, {
+		[tile1ref] = {
+			x = tile2ref.x,
+			y = tile2ref.y
+		},
+		[tile2ref] = {
+			x = tile1val.x,
+			y = tile1val.y
+		}
+	}):finish(function()
+		tile1ref = board[tile1row][tile1col]
+		board[tile1row][tile1col] = board[tile2row][tile2col]
+		board[tile2row][tile2col] = tile1ref
+		selector.row, selector.col = tile1row, tile1col
+		selector.blocked = false
+	end)
+
+end
 
 
 
