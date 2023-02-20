@@ -76,16 +76,51 @@ function giveMatches(board)
 			numMatch = numMatch + 1
 		end
 	end
+
+	for c = 0, NUM_COL -1 do
+		local onAStrike = false
+		local previousColor =  nil
+		local strikeLength = 0
+		for r = 0, NUM_ROW - 1 do
+			if board[r][c].color == previousColor then
+				onAStrike = true
+				strikeLength = strikeLength + 1
+			else
+				if strikeLength >= 2 then
+					matches[numMatch] = generateMatchUpwards(board, r-1, c, strikeLength)
+					numMatch = numMatch + 1
+				end
+				onAStrike = false
+				strikeLength = 0
+			end
+			previousColor = board[r][c].color
+		end
+		if strikeLength >= 2 then
+			matches[numMatch] = generateMatchUpwards(board, NUM_ROW -1 , c, strikeLength)
+			numMatch = numMatch + 1
+		end
+	end
 	return matches
 end
 
 function generateMatchBackwards(board, r, c, length)
-	if length > c -1 then
+	if length > c + 1 then
 		return nil
 	end
 	match = {}
 	for i = 0, length do
 		match[i] = Position(r, c-i)
+	end
+	return match
+end
+
+function generateMatchUpwards(board, r, c, length)
+	if length > r + 1 then
+		return nil
+	end
+	match = {}
+	for i = 0, length do
+		match[i] = Position(r - i, c)
 	end
 	return match
 end

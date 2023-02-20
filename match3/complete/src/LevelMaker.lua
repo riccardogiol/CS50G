@@ -16,9 +16,9 @@ function LevelMaker:generateBoard(tileQuads, numRows, numCols, tileDim, numColr,
 		until not same
 		colors[c] = newCol
 	end
-	for j=0,numRows do
+	for j=0,numRows - 1 do
 		local newRow = {}
-		for i=0, numCols do
+		for i=0, numCols - 1 do
 			local col = colors[math.random(0, numColr-1)]
 			local sym = math.random(0, numSymbl-1)
 			newRow[i] = Tile(tileQuads[col][sym], col, i*tileDim, j*tileDim, tileDim, tileDim)

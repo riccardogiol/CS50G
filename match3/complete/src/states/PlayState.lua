@@ -24,11 +24,8 @@ function PlayState:update()
 				self.selectedTile.col = self.selector.col
 				self.selectedTile.selected = true
 			else
-				self.selector.blocked = true
-				tweenTiles(self.selectedTile.row, self.selectedTile.col, self.selector.row, self.selector.col)
-				self.selector.blocked = false
+				self:tweenTiles(self.selectedTile.row, self.selectedTile.col, self.selector.row, self.selector.col)
 				self.selectedTile.selected = false
-				--self.matches = giveMatches(self.board)
 			end
 		end
 
@@ -68,12 +65,46 @@ function PlayState:update()
     end
 end 
 
+
+function PlayState:tweenTiles(tile1row, tile1col, tile2row, tile2col)
+	tile1ref = self.board[tile1row][tile1col]
+	tile1val = Tile(tile1ref.quad, tile1ref.color, tile1ref.x, tile1ref.y, tile1ref.w, tile1ref.h)
+	tile2ref = self.board[tile2row][tile2col]
+	self.selector.blocked = true
+	Timer.tween(0.2, {
+		[tile1ref] = {
+			x = tile2ref.x,
+			y = tile2ref.y
+		},
+		[tile2ref] = {
+			x = tile1val.x,
+			y = tile1val.y
+		}
+	}):finish(function()
+		tile1ref = self.board[tile1row][tile1col]
+		self.board[tile1row][tile1col] = self.board[tile2row][tile2col]
+		self.board[tile2row][tile2col] = tile1ref
+		self.selector.blocked = false
+		self.matches = giveMatches(self.board)
+		self:removeMatches()
+	end)
+
+end
+
+function PlayState:removeMatches()
+	for j, m in pairs(self.matches) do
+		for i, t in pairs(m) do
+			self.board[t.row][t.col] = nil
+		end
+	end
+end
+
 function PlayState:render()
 	-- print board
 	love.graphics.setColor(1, 1, 1, 1)
-	for j=0,7 do
-		for i=0,7 do
-			self.board[j][i]:render(OFFSET_X, OFFSET_Y)
+	for j, r in pairs(self.board) do
+		for i, t in pairs(r) do
+			t:render(OFFSET_X, OFFSET_Y)
 		end
 	end
 
@@ -94,8 +125,7 @@ function PlayState:render()
 	for j, m in pairs(self.matches) do
 		for i, t in pairs(m) do
 			love.graphics.setColor(1, 1, 1, 1)
-
-			love.graphics.print(tostring(t.row) .. " " .. tostring(t.col) .. ",", i*20, 30 + j*20)
+			love.graphics.print(tostring(t.row) .. " " .. tostring(t.col) .. ",", i*30, 30 + j*20)
 		end
 	end
 
