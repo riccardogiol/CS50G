@@ -38,8 +38,12 @@ function love.load()
 		['PlayState'] = function() return PlayState() end
 	})
 
+	colors = gLevelMaker:generateColors(4)
+
 	gStateMachine:change('PlayState', {
-		board = gLevelMaker:generateBoard(tileQuads, NUM_ROW, NUM_COL, TILE_SIZE, 4, 2)
+		board = gLevelMaker:generateBoard(tileQuads, NUM_ROW, NUM_COL, TILE_SIZE, colors, 2),
+		colors = colors,
+		numSymbols = 2
 	})
 end
 

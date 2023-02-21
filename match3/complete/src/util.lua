@@ -53,26 +53,34 @@ end
 function giveMatches(board)
 	matches = {}
 	local numMatch = 0
-	for r = 0, NUM_ROW -1 do
+	for j, r in pairs(board) do
 		local onAStrike = false
 		local previousColor =  nil
 		local strikeLength = 0
-		for c = 0, NUM_COL - 1 do
-			if board[r][c].color == previousColor then
-				onAStrike = true
-				strikeLength = strikeLength + 1
-			else
-				if strikeLength >= 2 then
-					matches[numMatch] = generateMatchBackwards(board, r, c-1, strikeLength)
-					numMatch = numMatch + 1
-				end
+		local numCol = 0
+		for i, c in pairs(r) do
+			if not c.tile then
 				onAStrike = false
+				previousColor =  nil
 				strikeLength = 0
+			else
+				if c.tile.color == previousColor then
+					onAStrike = true
+					strikeLength = strikeLength + 1
+				else
+					if strikeLength >= 2 then
+						matches[numMatch] = generateMatchBackwards(j, i-1, strikeLength)
+						numMatch = numMatch + 1
+					end
+					onAStrike = false
+					strikeLength = 0
+				end
+				previousColor = c.tile.color
+				numCol = numCol + 1
 			end
-			previousColor = board[r][c].color
 		end
 		if strikeLength >= 2 then
-			matches[numMatch] = generateMatchBackwards(board, r, NUM_COL - 1, strikeLength)
+			matches[numMatch] = generateMatchBackwards(j, numCol-1, strikeLength)
 			numMatch = numMatch + 1
 		end
 	end
@@ -82,28 +90,34 @@ function giveMatches(board)
 		local previousColor =  nil
 		local strikeLength = 0
 		for r = 0, NUM_ROW - 1 do
-			if board[r][c].color == previousColor then
-				onAStrike = true
-				strikeLength = strikeLength + 1
-			else
-				if strikeLength >= 2 then
-					matches[numMatch] = generateMatchUpwards(board, r-1, c, strikeLength)
-					numMatch = numMatch + 1
-				end
+			if not board[r][c].tile then
 				onAStrike = false
+				previousColor =  nil
 				strikeLength = 0
+			else
+				if board[r][c].tile.color == previousColor then
+					onAStrike = true
+					strikeLength = strikeLength + 1
+				else
+					if strikeLength >= 2 then
+						matches[numMatch] = generateMatchUpwards(r-1, c, strikeLength)
+						numMatch = numMatch + 1
+					end
+					onAStrike = false
+					strikeLength = 0
+				end
+				previousColor = board[r][c].tile.color
 			end
-			previousColor = board[r][c].color
 		end
 		if strikeLength >= 2 then
-			matches[numMatch] = generateMatchUpwards(board, NUM_ROW -1 , c, strikeLength)
+			matches[numMatch] = generateMatchUpwards(NUM_ROW -1 , c, strikeLength)
 			numMatch = numMatch + 1
 		end
 	end
 	return matches
 end
 
-function generateMatchBackwards(board, r, c, length)
+function generateMatchBackwards(r, c, length)
 	if length > c + 1 then
 		return nil
 	end
@@ -114,7 +128,7 @@ function generateMatchBackwards(board, r, c, length)
 	return match
 end
 
-function generateMatchUpwards(board, r, c, length)
+function generateMatchUpwards(r, c, length)
 	if length > r + 1 then
 		return nil
 	end
