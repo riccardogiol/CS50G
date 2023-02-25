@@ -1,5 +1,8 @@
 push = require 'push'
+Class = require 'class'
+
 require 'util'
+require 'Animation'
 
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
@@ -29,6 +32,8 @@ function love.load()
 		['character'] = love.graphics.newImage('character.png')
 	}
 
+	-- prepare map
+
 	brickQuads = generateQuads(gTexture['brick'], TILE_SIZE, TILE_SIZE)
 	characterQuads = generateQuads(gTexture['character'], CHARACTER_WIDTH, CHARACTER_HEIGHT)
 
@@ -45,8 +50,23 @@ function love.load()
 		tiles[r] = newRow
 	end
 
+	-- prepare character
+
 	characterX = VIRTUAL_WIDTH/2 - CHARACTER_WIDTH/2
 	characterY = 5 * TILE_SIZE - CHARACTER_HEIGHT
+	characterDirection = 'right'
+
+	idleAnimation = Animation({
+		frames = {1},
+		interval = 1
+	})
+
+	movingAnimation = Animation({
+		frames = {10, 11},
+		interval = 0.2
+	})
+
+	currentCharacterAnimation = idleAnimation
 
 	cameraScrollX = 0
 
@@ -59,12 +79,19 @@ end
 function love.update(dt)
 	if love.keyboard.isDown('left') then
 		characterX = characterX - CHARACTER_SPEED * dt
+		characterDirection = 'left'
+		currentCharacterAnimation = movingAnimation
 	elseif love.keyboard.isDown('right') then
 		characterX = characterX + CHARACTER_SPEED * dt
+		characterDirection = 'right'
+		currentCharacterAnimation = movingAnimation
+	else
+		currentCharacterAnimation = idleAnimation
 	end
 
 	cameraScrollX = - (characterX - (VIRTUAL_WIDTH/2 - CHARACTER_WIDTH/2))
 
+	currentCharacterAnimation:update(dt)
 
 end
 
@@ -86,7 +113,12 @@ function love.draw()
 		end
 	end
 
-	love.graphics.draw(gTexture['character'], characterQuads[1], math.floor(characterX), math.floor(characterY))
+	xMirroring = characterDirection == 'right' and 1 or -1
+
+	love.graphics.draw(gTexture['character'], characterQuads[currentCharacterAnimation:getCurrentFrame()],
+		math.floor(characterX) + CHARACTER_WIDTH/2, math.floor(characterY) + CHARACTER_HEIGHT/2, 
+		0, xMirroring, 1,
+		CHARACTER_WIDTH/2, CHARACTER_HEIGHT/2)
 
 	push:finish()
 end
