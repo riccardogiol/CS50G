@@ -8,4 +8,6 @@ require 'src/LevelMaker'
 require 'src/util'
 
 require 'src/states/BaseState'
+require 'src/states/TransitionState'
 require 'src/states/PlayState'
+require 'src/states/StartState'

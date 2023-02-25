@@ -27,24 +27,42 @@ function love.load()
 	love.keyboard.keyPressed = {}
 
 	gTexture = {
-		['tiles'] = love.graphics.newImage('media/match3.png')
+		['tiles'] = love.graphics.newImage('media/match3.png'),
+		['background'] = love.graphics.newImage('media/background.png')
 	}
+
+	gFonts = {
+		['small'] = love.graphics.newFont('media/font.ttf', 8),
+		['medium'] = love.graphics.newFont('media/font.ttf', 16),
+		['large'] = love.graphics.newFont('media/font.ttf', 32)
+	}
+
+	gSounds = {
+		['select'] = love.audio.newSource('media/select.wav', 'static'),
+		['remove'] = love.audio.newSource('media/remove_blocks.wav', 'static'),
+		['fall'] = love.audio.newSource('media/falling_block.wav', 'static')
+	}
+
+	gSounds['remove']:setVolume(0.5)
 
 	gTileQuads = generateTileQuads(gTexture['tiles'], TILE_SIZE, 18, 6)
 
 	gLevelMaker = LevelMaker()
 
 	gStateMachine = StateMachine({
+		['StartState'] = function() return StartState() end,
+		['TransitionState'] = function() return TransitionState() end,
 		['PlayState'] = function() return PlayState() end
 	})
 
+	backgroundX = -52
+	timerBack = Timer.every(0.05, function()
+		backgroundX = ((backgroundX - 1) % 52) - 52
+	end)
+
 	colors = gLevelMaker:generateColors(4)
 
-	gStateMachine:change('PlayState', {
-		board = gLevelMaker:generateBoard(tileQuads, NUM_ROW, NUM_COL, TILE_SIZE, colors, 2),
-		colors = colors,
-		numSymbols = 2
-	})
+	gStateMachine:change('StartState')
 end
 
 function love.keypressed(key)
@@ -67,9 +85,12 @@ end
 function love.draw()
 	push:start()
 
+	love.graphics.draw(gTexture['background'], backgroundX, 0)
+
 	gStateMachine:render()
 
 	love.graphics.setColor(1, 1, 1, 1)
+	love.graphics.setFont(gFonts['small'])
 	love.graphics.print("FPS " .. tostring(love.timer.getFPS()), 3, 3)
 	push:finish()
 end

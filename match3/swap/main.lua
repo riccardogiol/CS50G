@@ -116,6 +116,7 @@ function love.draw()
 	end
 
 	love.graphics.setColor(1, 0, 0, 1)
+	love.graphics.setLineWidth(4)
 	local selectorX, selectorY = board[selector.row][selector.col]:getPosition()
 	love.graphics.rectangle('line', OFFSET_X + selectorX, OFFSET_Y + selectorY, selector.dim, selector.dim)
 

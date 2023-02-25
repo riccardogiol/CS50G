@@ -4,6 +4,7 @@ function PlayState:enter(enterParams)
 	self.board = enterParams.board
 	self.colors = enterParams.colors
 	self.numSymbols = enterParams.numSymbols
+	self.score = 0
 	self.selector = {
 		row = 0,
 		col = 0,
@@ -15,12 +16,13 @@ function PlayState:enter(enterParams)
 		col = 0,
 		selected = false
 	}
-	self.matches = giveMatches(self.board)
+	self:giveMatches(self.board)
 end 
 
 function PlayState:update()
 	if not self.selector.blocked then
 		if love.keyboard.wasPressed('enter') or love.keyboard.wasPressed('return') then
+			gSounds['select']:play()
 			if not self.selectedTile.selected then
 				self.selectedTile.row = self.selector.row
 				self.selectedTile.col = self.selector.col
@@ -86,7 +88,8 @@ function PlayState:tweenTiles(tile1row, tile1col, tile2row, tile2col)
 		tile1ref = self.board[tile1row][tile1col].tile
 		self.board[tile1row][tile1col].tile = self.board[tile2row][tile2col].tile
 		self.board[tile2row][tile2col].tile = tile1ref
-		self.matches = giveMatches(self.board)
+		self:giveMatches()
+		self:updateScore()
 		self:removeMatches()
 		self:allignBottom()
 		self:fillTop()
@@ -97,7 +100,85 @@ function PlayState:tweenTiles(tile1row, tile1col, tile2row, tile2col)
 
 end
 
+function PlayState:giveMatches()
+	matches = {}
+	local numMatch = 0
+	for j, r in pairs(self.board) do
+		local onAStrike = false
+		local previousColor =  nil
+		local strikeLength = 1
+		local numCol = 0
+		for i, c in pairs(r) do
+			if not c.tile then
+				onAStrike = false
+				previousColor =  nil
+				strikeLength = 1
+			else
+				if c.tile.color == previousColor then
+					onAStrike = true
+					strikeLength = strikeLength + 1
+				else
+					if strikeLength >= 3 then
+						matches[numMatch] = generateMatchBackwards(j, i-1, strikeLength)
+						numMatch = numMatch + 1
+					end
+					onAStrike = false
+					strikeLength = 1
+				end
+				previousColor = c.tile.color
+				numCol = numCol + 1
+			end
+		end
+		if strikeLength >= 3 then
+			matches[numMatch] = generateMatchBackwards(j, numCol-1, strikeLength)
+			numMatch = numMatch + 1
+		end
+	end
+
+	for c = 0, NUM_COL -1 do
+		local onAStrike = false
+		local previousColor =  nil
+		local strikeLength = 1
+		for r = 0, NUM_ROW - 1 do
+			if not self.board[r][c].tile then
+				onAStrike = false
+				previousColor =  nil
+				strikeLength = 1
+			else
+				if self.board[r][c].tile.color == previousColor then
+					onAStrike = true
+					strikeLength = strikeLength + 1
+				else
+					if strikeLength >= 3 then
+						matches[numMatch] = generateMatchUpwards(r-1, c, strikeLength)
+						numMatch = numMatch + 1
+					end
+					onAStrike = false
+					strikeLength = 1
+				end
+				previousColor = self.board[r][c].tile.color
+			end
+		end
+		if strikeLength >= 3 then
+			matches[numMatch] = generateMatchUpwards(NUM_ROW -1 , c, strikeLength)
+			numMatch = numMatch + 1
+		end
+	end
+	self.matches = matches
+end
+
+function PlayState:updateScore()
+	for j, m in pairs(self.matches) do
+		local length = 0
+		for i, t in pairs(m) do
+			length = length + 1
+		end
+		self.score = self.score + length * length
+	end
+end
+
 function PlayState:removeMatches()
+	gSounds['remove']:play()
 	for j, m in pairs(self.matches) do
 		for i, t in pairs(m) do
 			self.board[t.row][t.col].tile = nil
@@ -132,7 +213,10 @@ function PlayState:moveTile(fromR, fromC, toR, toC)
 			x = self.board[toR][toC].x,
 			y = self.board[toR][toC].y
 		}
-	})
+	}):finish(function()
+		gSounds['fall']:stop()
+		gSounds['fall']:play()
+	end)
 end
 
 
@@ -170,7 +254,10 @@ function PlayState:addNewTile(tileQuads, numColr, toR, toC, seriePosition)
 			x = self.board[toR][toC].x,
 			y = self.board[toR][toC].y
 		}
-	})
+	}):finish(function() 
+		gSounds['fall']:stop()
+		gSounds['fall']:play()
+	end)
 end
 
 
@@ -200,12 +287,9 @@ function PlayState:render()
 		love.graphics.rectangle('fill', OFFSET_X + selectedX, OFFSET_Y + selectedY, TILE_SIZE, TILE_SIZE)
 	end
 
-	-- print matches
-	for j, m in pairs(self.matches) do
-		for i, t in pairs(m) do
-			love.graphics.setColor(1, 1, 1, 1)
-			love.graphics.print(tostring(t.row) .. " " .. tostring(t.col) .. ",", i*30, 30 + j*20)
-		end
-	end
+	-- print score
+	love.graphics.setColor(1, 1, 0.2, 1)
+	love.graphics.setFont(gFonts['medium'])
+	love.graphics.printf("SCORE: " .. tostring(self.score), 0, 5,  VIRTUAL_WIDTH, 'right')
 
 end 
