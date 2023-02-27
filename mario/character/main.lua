@@ -4,15 +4,17 @@ Class = require 'class'
 require 'util'
 require 'Animation'
 
-WINDOW_WIDTH = 1280
-WINDOW_HEIGHT = 720
+WINDOW_WIDTH = 640
+WINDOW_HEIGHT = 360
 
 VIRTUAL_WIDTH = 256
 VIRTUAL_HEIGHT = 144
 
 CHARACTER_WIDTH = 16
 CHARACTER_HEIGHT = 20
-CHARACTER_SPEED = 40
+CHARACTER_SPEED = 60
+CHARACTER_JUMP = -200
+GRAVITY = 420
 
 TILE_SIZE = 16
 
@@ -54,6 +56,7 @@ function love.load()
 
 	characterX = VIRTUAL_WIDTH/2 - CHARACTER_WIDTH/2
 	characterY = 5 * TILE_SIZE - CHARACTER_HEIGHT
+	characterDY = CHARACTER_JUMP
 	characterDirection = 'right'
 
 	idleAnimation = Animation({
@@ -66,9 +69,17 @@ function love.load()
 		interval = 0.2
 	})
 
+	jumpingAnimation = Animation({
+		frames = {3},
+		interval = 1
+	})
+
+	currentCharacterState = 'standing'
 	currentCharacterAnimation = idleAnimation
 
 	cameraScrollX = 0
+
+	love.keyboard.keypressed = {}
 
 end
 
@@ -77,6 +88,11 @@ function love.resize(w, h)
 end
 
 function love.update(dt)
+	if love.keyboard.keypressed['space'] and currentCharacterState == 'standing' then
+		currentCharacterState = 'jumping'
+		characterDY = CHARACTER_JUMP
+	end
+
 	if love.keyboard.isDown('left') then
 		characterX = characterX - CHARACTER_SPEED * dt
 		characterDirection = 'left'
@@ -89,13 +105,30 @@ function love.update(dt)
 		currentCharacterAnimation = idleAnimation
 	end
 
+	if not (currentCharacterState == 'standing') then
+		currentCharacterAnimation = jumpingAnimation
+		characterDY = characterDY + GRAVITY * dt
+		characterY = characterY + characterDY * dt
+		if characterDY > 0 then
+			if characterY > 5*TILE_SIZE - CHARACTER_HEIGHT then
+				characterY = 5*TILE_SIZE - CHARACTER_HEIGHT
+				characterDY = 0
+				currentCharacterState = 'standing'
+			else
+				currentCharacterState = 'falling'
+			end
+		end
+	end
+
 	cameraScrollX = - (characterX - (VIRTUAL_WIDTH/2 - CHARACTER_WIDTH/2))
 
 	currentCharacterAnimation:update(dt)
 
+	love.keyboard.keypressed = {}
 end
 
 function love.keypressed(key)
+	love.keyboard.keypressed[key] = true
 	if key == 'escape' then
 		love.event.quit()
 	end
@@ -119,6 +152,16 @@ function love.draw()
 		math.floor(characterX) + CHARACTER_WIDTH/2, math.floor(characterY) + CHARACTER_HEIGHT/2, 
 		0, xMirroring, 1,
 		CHARACTER_WIDTH/2, CHARACTER_HEIGHT/2)
+
+
+	love.graphics.translate( - math.floor(cameraScrollX), 0)
+
+
+	love.graphics.setColor(1, 1, 1, 1)
+	love.graphics.print(tostring(currentCharacterState), 2, 30)
+
+	love.graphics.setColor(1, 1, 1, 1)
+	love.graphics.print('FPS ' .. tostring(love.timer.getFPS()), 2, 2)
 
 	push:finish()
 end
