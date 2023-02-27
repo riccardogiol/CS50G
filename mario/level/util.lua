@@ -41,3 +41,43 @@ function generateQuadsGroups(quads, groupRows, groupColumns, rowsPerGroup, colsP
 	end
 	return quadsGroups
 end
+
+function generateMap()
+	map = {}
+
+
+	for r = 1, mapHeight do
+		newRow = {}
+		for c = 1, mapWidth do
+			newRow[c] = {
+				id = SKY,
+				top = false
+			}
+		end
+		map[r] = newRow
+	end
+
+	for c = 1, mapWidth do
+		isChasm = math.random(9) == 1
+		if isChasm then
+			goto continue
+		end
+		local top = 6
+		isPillar = math.random(6) == 1
+		if isPillar then
+			top = top - 3
+		end
+		for r = 1, mapHeight do
+			if r >= top then
+				map[r][c].id = GROUND
+			end
+			if r == top then
+				map[r][c].top = true
+			end
+		end
+		::continue::
+	end
+
+
+	return map
+end

@@ -60,20 +60,9 @@ function love.load()
 	topSets = generateQuadsGroups(topRawQuads, topGroupRows, topGroupColumns, rowsPerGroup, colsPerGroup)
 
 	mapHeight = 20
-	mapWidth = 20
+	mapWidth = 100
 
-	tiles = {}
-
-	for r = 1, mapHeight do
-		newRow = {}
-		for c = 1, mapWidth do
-			newRow[c] = {
-				id = r < 6 and SKY or GROUND,
-				top = r == 6
-			}
-		end
-		tiles[r] = newRow
-	end
+	tiles = generateMap()
 
 	tileGroup = math.random(#tileSets)
 	topGroup = math.random(#topSets)
