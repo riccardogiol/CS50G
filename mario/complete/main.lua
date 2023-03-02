@@ -19,6 +19,20 @@ function love.load()
 		['tile_tops'] = love.graphics.newImage('media/images/tile_tops.png')
 	}
 
+	tilesRawQuads = generateQuads(gTexture['tiles'], TILE_SIZE, TILE_SIZE)
+	topRawQuads = generateQuads(gTexture['tile_tops'], TILE_SIZE, TILE_SIZE)
+
+	local tileGroupRows = 10
+	local tileGroupColumns = 6
+	local topGroupRows = 18
+	local topGroupColumns = 6
+	local rowsPerGroup = 4
+	local colsPerGroup = 5
+
+	gTileQuads = generateQuadsGroups(tilesRawQuads, tileGroupRows, tileGroupColumns, rowsPerGroup, colsPerGroup)
+	gTopQuads = generateQuadsGroups(topRawQuads, topGroupRows, topGroupColumns, rowsPerGroup, colsPerGroup)
+
+	
 	gFrames = {
 		['character'] = generateQuads(gTexture['character'], CHARACTER_WIDTH, CHARACTER_HEIGHT)
 	}

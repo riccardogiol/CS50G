@@ -11,12 +11,9 @@ function Entity:init(def)
 
 	--pass code of the texture and not texture itself otherwis it will reinstantiate lots of texture, no notion of passing for reference?
 	self.texture = def.texture
-	--self.currentAnimation = nil
+	self.currentAnimation = nil
 	self.stateMachine = def.stateMachine
 
-	self.map = def.map
-
-	--what does this do?
 	self.level = def.level
 end
 

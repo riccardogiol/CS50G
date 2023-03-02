@@ -1,30 +1,25 @@
 --LevelMaker = Class{}
 Level = Class{}
 
-SKY = 5
-GROUND = 3
+TILE_CODES = {
+	SKY = {
+		POS = 5,
+		COLL = false
+	},
+	GROUND = {
+		POS = 3,
+		COLL = true
+	}
+}
 
 function Level:init(mapWidth, mapHeight)
 	self.mapWidth = mapWidth
 	self.mapHeight = mapHeight
 
+	self.tileGroup = math.random(#gTileQuads)
+	self.topGroup = math.random(#gTopQuads)
+
 	self.tileMap = self:generateMap()
-
-	local tileGroupRows = 10
-	local tileGroupColumns = 6
-	local topGroupRows = 18
-	local topGroupColumns = 6
-	local rowsPerGroup = 4
-	local colsPerGroup = 5
-	
-	local tilesRawQuads = generateQuads(gTexture['tiles'], TILE_SIZE, TILE_SIZE)
-	self.tileSets = generateQuadsGroups(tilesRawQuads, tileGroupRows, tileGroupColumns, rowsPerGroup, colsPerGroup)
-
-	local topRawQuads = generateQuads(gTexture['tile_tops'], TILE_SIZE, TILE_SIZE)
-	self.topSets = generateQuadsGroups(topRawQuads, topGroupRows, topGroupColumns, rowsPerGroup, colsPerGroup)
-
-	self.tileGroup = math.random(#self.tileSets)
-	self.topGroup = math.random(#self.topSets)
 end
 
 
@@ -35,10 +30,7 @@ function Level:generateMap()
 	for r = 1, self.mapHeight do
 		newRow = {}
 		for c = 1, self.mapWidth do
-			newRow[c] = {
-				id = SKY,
-				top = false
-			}
+			newRow[c] = Tile((c-1) * TILE_SIZE, (r-1) * TILE_SIZE, TILE_CODES['SKY'], false, self.tileGroup, self.topGroup)
 		end
 		map[r] = newRow
 	end
@@ -52,14 +44,14 @@ function Level:generateMap()
 		local top = 6
 		isPillar = math.random(6) == 1
 		if isPillar then
-			top = top - 3
+			top = top - 2
 		end
 		for r = 1, self.mapHeight do
 			if r >= top then
-				map[r][c].id = GROUND
+				map[r][c].tileType =  TILE_CODES['GROUND']
 			end
 			if r == top then
-				map[r][c].top = true
+				map[r][c].isTopper = true
 			end
 		end
 		::continue::
@@ -68,19 +60,25 @@ function Level:generateMap()
 	return map
 end
 
+--[[
 function Level:randomiseTiles()
 	self.tileGroup = math.random(#self.tileSets)
 	self.topGroup = math.random(#self.topSets)
+end]]
+
+function Level:tileFromPoint(x, y)
+	if x<0 or x> self.mapWidth*TILE_SIZE or y<0 or y>self.mapHeight*TILE_SIZE then
+		return nil
+	end
+
+	return self.tileMap[math.ceil(y/TILE_SIZE)][math.ceil(x/TILE_SIZE)]
 end
 
 
 function Level:render()
 	for y = 1, self.mapHeight do
 		for x = 1 , self.mapWidth do
-			love.graphics.draw(gTexture['tiles'], self.tileSets[self.tileGroup][self.tileMap[y][x].id], (x-1) * TILE_SIZE, (y-1) * TILE_SIZE)
-			if self.tileMap[y][x].top then
-				love.graphics.draw(gTexture['tile_tops'], self.topSets[self.topGroup][1], (x-1) * TILE_SIZE, (y-1) * TILE_SIZE)
-			end
+			self.tileMap[y][x]:render()
 		end
 	end
 end

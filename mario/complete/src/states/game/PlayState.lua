@@ -18,7 +18,6 @@ function PlayState:init()
 		dy = 0,
 		direction = 'right',
 		texture = 'character',
-		map = nil,
 		level = self.level,
 		stateMachine = StateMachine {
 			['idle'] = function() return PlayerIdleState(self.player) end,
