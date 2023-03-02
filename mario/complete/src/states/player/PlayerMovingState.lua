@@ -22,6 +22,7 @@ function PlayerMovingState:update(dt)
 		self.player.x = self.player.x + self.player.dx * dt
 		self.player.direction = 'right'
 	else
+		self.player.dx = 0
 		self.player:changeState('idle')
 	end
 end

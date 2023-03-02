@@ -1,7 +1,7 @@
-PlayerJumpingState = Class{__includes = BaseState}
+PlayerFallingState = Class{__includes = BaseState}
 
 
-function PlayerJumpingState:init(player)
+function PlayerFallingState:init(player)
 	self.player = player
 
 	self.animation = Animation({
@@ -12,11 +12,7 @@ function PlayerJumpingState:init(player)
 	self.player.currentAnimation = self.animation
 end
 
-function PlayerJumpingState:enter(enterParams)
-	self.player.dy = CHARACTER_JUMP
-end
-
-function PlayerJumpingState:update(dt)
+function PlayerFallingState:update(dt)
 	if love.keyboard.isDown('left') then
 		self.player.dx = CHARACTER_SPEED
 		self.player.x = self.player.x - self.player.dx * dt
@@ -30,8 +26,10 @@ function PlayerJumpingState:update(dt)
 	self.player.dy = self.player.dy + GRAVITY * dt
 	self.player.y = self.player.y + self.player.dy * dt
 
-	if self.player.dy > 0 then
-		self.player:changeState('falling')
+	if self.player.y > 5*TILE_SIZE - CHARACTER_HEIGHT then
+		self.player.y = 5*TILE_SIZE - CHARACTER_HEIGHT
+		self.player.dy = 0
+		self.player:changeState('idle')
 	end
 
 end
