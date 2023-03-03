@@ -20,6 +20,7 @@ function Level:init(mapWidth, mapHeight)
 	self.topGroup = math.random(#gTopQuads)
 
 	self.tileMap = self:generateMap()
+	self.enemies = self:generateEnemies()
 end
 
 
@@ -117,16 +118,41 @@ function Level:generateMap()
 	return map
 end
 
---[[
-function Level:randomiseTiles()
-	self.tileGroup = math.random(#self.tileSets)
-	self.topGroup = math.random(#self.topSets)
-end]]
+function Level:generateEnemies()
+	snails = {}
+
+	c = 15
+
+	groundFound = false
+	for r = 1, self.mapHeight do
+		if not groundFound then
+			if self.tileMap[r][c].isTopper then
+				groundFound = true
+				local snail
+				snail = Snail({
+					x = self.tileMap[r - 1][c].x,
+					y = self.tileMap[r - 1][c].y,
+					width = TILE_SIZE,
+					height = TILE_SIZE,
+					dx = 0,
+					dy = 0,
+					direction = 'left',
+					texture = 'snail',
+					level = self,
+					stateMachine = StateMachine {
+						['idle'] = function() return SnailIdleState(snail) end,
+						['moving'] = function() return SnailMovingState(snail) end
+					}
+				})
+				snail:changeState('idle')
+				table.insert(snails, snail)
+			end
+		end
+	end
+	return snails
+end
 
 function Level:tileFromPoint(x, y)
-	--[[if x<0 or x> self.mapWidth*TILE_SIZE or y<0 or y>self.mapHeight*TILE_SIZE then
-		return nil
-	end]]
 	if x < 0 then
 		return Tile(-TILE_SIZE, y, TILE_CODES['GROUND'], false, self.tileGroup, self.topGroup)
 	elseif x > self.mapWidth * TILE_SIZE then
@@ -139,11 +165,19 @@ function Level:tileFromPoint(x, y)
 	return self.tileMap[math.ceil(y/TILE_SIZE)][math.ceil(x/TILE_SIZE)]
 end
 
+function Level:update(dt)
+	for i, e in pairs(self.enemies) do
+		e:update(dt)
+	end
+end
 
 function Level:render()
 	for y = 1, self.mapHeight do
 		for x = 1 , self.mapWidth do
 			self.tileMap[y][x]:render()
 		end
+	end
+	for i, e in pairs(self.enemies) do
+		e:render()
 	end
 end

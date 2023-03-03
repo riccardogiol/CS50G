@@ -15,6 +15,7 @@ function love.load()
 	gTexture = {
 		['brick'] = love.graphics.newImage('media/images/tiles.png'),
 		['character'] = love.graphics.newImage('media/images/character.png'),
+		['snail'] = love.graphics.newImage('media/images/creatures.png'),
 		['tiles'] = love.graphics.newImage('media/images/tiles.png'),
 		['tile_tops'] = love.graphics.newImage('media/images/tile_tops.png')
 	}
@@ -34,7 +35,8 @@ function love.load()
 
 	
 	gFrames = {
-		['character'] = generateQuads(gTexture['character'], CHARACTER_WIDTH, CHARACTER_HEIGHT)
+		['character'] = generateQuads(gTexture['character'], CHARACTER_WIDTH, CHARACTER_HEIGHT),
+		['snail'] = generateQuads(gTexture['snail'], TILE_SIZE, TILE_SIZE)
 	}
 
 	-- prepare game states
