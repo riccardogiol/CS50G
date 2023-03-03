@@ -37,19 +37,47 @@ function Level:generateMap()
 
 	--fill map with ground and objects
 	platformCount = 0
+	hillCount = 0
+	pillarCount = 0
+	chasmCount = 0
+	local top = 8
 	for c = 1, self.mapWidth do
-		local top = 8
-		isChasm = math.random(9) == 1
+		top = 8
+
+		isChasm = math.random(12) == 1
 		if isChasm then
+			chasmCount = math.random(2)
+		end
+
+		if chasmCount > 0 then
+			chasmCount = chasmCount - 1
 			goto continue
 		end
-		isPillar = math.random(6) == 1
-		isPlatform = math.random(15) == 1
+
+		isPillar = math.random(9) == 1
+		if isPillar then
+			pillarCount = math.random(3)
+		end
+
+		isPlatform = math.random(20) == 1
 		if isPlatform then
 			platformCount = 3
 		end
-		if isPillar then
+
+		hillBegins = math.random(30) == 1
+		if hillBegins then
+			hillCount = 20
+		end
+
+		if hillCount > 0 then
+			top = top - 1
+			hillCount = hillCount -1
+		end
+
+		if pillarCount > 0 and not hillBegins then
+			isPillar = true
 			top = top - 3
+			pillarCount = pillarCount - 1
 		end
 		for r = 1, self.mapHeight do
 			if r >= top then

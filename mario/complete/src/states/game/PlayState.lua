@@ -5,7 +5,9 @@ function PlayState:init()
 
 	self.backgroundColor = {math.random(), math.random(), math.random(), 1}
 
-	self.level = Level(100, 15)
+	self.mapWidth = 100
+
+	self.level = Level(self.mapWidth, 15)
 
 	-- prepare character
 
@@ -42,18 +44,18 @@ function PlayState:update(dt)
 
 	self.player:update(dt)
 
-	self.cameraScrollX = - (self.player.x - (VIRTUAL_WIDTH/2 - CHARACTER_WIDTH/2))
+	self.cameraScrollX = math.min(math.max(self.player.x - (VIRTUAL_WIDTH/2 - CHARACTER_WIDTH/2), 0), self.mapWidth*TILE_SIZE - VIRTUAL_WIDTH)
 
 end
 
 function PlayState:render()
-	love.graphics.translate(math.floor(self.cameraScrollX), 0)
+	love.graphics.translate(math.floor(- self.cameraScrollX), 0)
 
 	love.graphics.clear(self.backgroundColor)
 	self.level:render()
 
 	self.player:render()
 
-	love.graphics.translate( - math.floor(self.cameraScrollX), 0)
+	love.graphics.translate(math.floor(self.cameraScrollX), 0)
 
 end
