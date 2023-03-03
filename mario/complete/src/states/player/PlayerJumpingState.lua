@@ -29,11 +29,15 @@ function PlayerJumpingState:update(dt)
 		self.player:rightCollision()
 	end
 
-	self.player.dy = self.player.dy + GRAVITY * dt
-	self.player.y = self.player.y + self.player.dy * dt
-
-	if self.player.dy > 0 then
+	if self.player:topCollision() then
 		self.player:changeState('falling')
+	else
+		self.player.dy = self.player.dy + GRAVITY * dt
+		self.player.y = self.player.y + self.player.dy * dt
+
+		if self.player.dy > 0 then
+			self.player:changeState('falling')
+		end
 	end
 
 end

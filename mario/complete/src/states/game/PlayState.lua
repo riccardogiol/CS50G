@@ -5,13 +5,13 @@ function PlayState:init()
 
 	self.backgroundColor = {math.random(), math.random(), math.random(), 1}
 
-	self.level = Level(100, 20)
+	self.level = Level(100, 15)
 
 	-- prepare character
 
 	self.player = Player({
 		x = VIRTUAL_WIDTH/2 - CHARACTER_WIDTH/2,
-		y = 5 * TILE_SIZE - CHARACTER_HEIGHT,
+		y = 5,
 		width = CHARACTER_WIDTH,
 		height = CHARACTER_HEIGHT,
 		dx = 0,

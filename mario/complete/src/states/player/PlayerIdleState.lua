@@ -13,13 +13,12 @@ function PlayerIdleState:init(player)
 end
 
 function PlayerIdleState:update(dt)
-	if love.keyboard.keypressed['space'] then
+	if not self.player:groundCollision() then
+		self.player:changeState('falling')
+	elseif love.keyboard.keypressed['space'] then
 		self.player:changeState('jumping')
-	end
-
-	if love.keyboard.isDown('left') or love.keyboard.isDown('right') then
+	elseif love.keyboard.isDown('left') or love.keyboard.isDown('right') then
 		self.player.dx = CHARACTER_SPEED
 		self.player:changeState('moving')
 	end
-
 end

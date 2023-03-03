@@ -28,10 +28,14 @@ function PlayerFallingState:update(dt)
 	self.player.dy = self.player.dy + GRAVITY * dt
 	self.player.y = self.player.y + self.player.dy * dt
 
+	if self.player:groundCollision() then
+		self.player:changeState('idle')
+	end
+--[[
 	if self.player.y > 5*TILE_SIZE - CHARACTER_HEIGHT then
 		self.player.y = 5*TILE_SIZE - CHARACTER_HEIGHT
 		self.player.dy = 0
 		self.player:changeState('idle')
-	end
+	end]]
 
 end

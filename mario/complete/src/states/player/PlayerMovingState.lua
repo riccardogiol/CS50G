@@ -19,11 +19,16 @@ function PlayerMovingState:update(dt)
 		self.player.x = self.player.x - self.player.dx * dt
 		self.player.direction = 'left'
 		self.player:leftCollision()
+		if not self.player:groundCollision() then
+			self.player:changeState('falling')
+		end
 	elseif love.keyboard.isDown('right') then
 		self.player.x = self.player.x + self.player.dx * dt
 		self.player.direction = 'right'
 		self.player:rightCollision()
-
+		if not self.player:groundCollision() then
+			self.player:changeState('falling')
+		end
 	else
 		self.player.dx = 0
 		self.player:changeState('idle')

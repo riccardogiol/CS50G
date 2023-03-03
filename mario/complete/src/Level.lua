@@ -36,25 +36,54 @@ function Level:generateMap()
 	end
 
 	--fill map with ground and objects
+	platformCount = 0
 	for c = 1, self.mapWidth do
+		local top = 8
 		isChasm = math.random(9) == 1
 		if isChasm then
 			goto continue
 		end
-		local top = 6
 		isPillar = math.random(6) == 1
+		isPlatform = math.random(15) == 1
+		if isPlatform then
+			platformCount = 3
+		end
 		if isPillar then
-			top = top - 2
+			top = top - 3
 		end
 		for r = 1, self.mapHeight do
 			if r >= top then
 				map[r][c].tileType =  TILE_CODES['GROUND']
-			end
-			if r == top then
-				map[r][c].isTopper = true
+				if r == top then
+					map[r][c].isTopper = true
+				end
 			end
 		end
 		::continue::
+		if platformCount > 0 then
+			if isPillar then
+				map[top][c].tileType =  TILE_CODES['GROUND']
+				map[top][c].isTopper = true
+			else
+				map[top-3][c].tileType =  TILE_CODES['GROUND']
+				map[top-3][c].isTopper = true
+			end
+			platformCount = platformCount - 1
+		end
+
+	end
+	-- hard write the first 10 columns
+	for c = 1, 10 do
+		for r = 1, self.mapHeight do
+			map[r][c].tileType =  TILE_CODES['SKY']
+			map[r][c].isTopper = false
+			if r >= 6 then
+				map[r][c].tileType =  TILE_CODES['GROUND']
+			end
+			if r == 6 then
+				map[r][c].isTopper = true
+			end
+		end
 	end
 
 	return map
@@ -67,10 +96,18 @@ function Level:randomiseTiles()
 end]]
 
 function Level:tileFromPoint(x, y)
-	if x<0 or x> self.mapWidth*TILE_SIZE or y<0 or y>self.mapHeight*TILE_SIZE then
+	--[[if x<0 or x> self.mapWidth*TILE_SIZE or y<0 or y>self.mapHeight*TILE_SIZE then
 		return nil
+	end]]
+	if x < 0 then
+		return Tile(-TILE_SIZE, y, TILE_CODES['GROUND'], false, self.tileGroup, self.topGroup)
+	elseif x > self.mapWidth * TILE_SIZE then
+		return Tile(self.mapWidth*TILE_SIZE, y, TILE_CODES['GROUND'], false, self.tileGroup, self.topGroup)
+	elseif y < 0 then
+		return Tile(x, y, TILE_CODES['SKY'], false, self.tileGroup, self.topGroup)
+	elseif y > self.mapHeight*TILE_SIZE then
+		return Tile(x, self.mapHeight*TILE_SIZE, TILE_CODES['GROUND'], false, self.tileGroup, self.topGroup)
 	end
-
 	return self.tileMap[math.ceil(y/TILE_SIZE)][math.ceil(x/TILE_SIZE)]
 end
 
