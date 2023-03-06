@@ -16,9 +16,19 @@ function PlayerIdleState:update(dt)
 	if not self.player:groundCollision() then
 		self.player:changeState('falling')
 	elseif love.keyboard.keypressed['space'] then
-		self.player:changeState('jumping')
+		self.player:changeState('jumping', {
+			jumpSpeed = CHARACTER_JUMP
+		})
 	elseif love.keyboard.isDown('left') or love.keyboard.isDown('right') then
 		self.player.dx = CHARACTER_SPEED
 		self.player:changeState('moving')
+	end
+
+	for i, enemy in pairs(self.player.level.enemies) do
+		if enemy.alive then
+			if enemy:collides(self.player) then
+				gStateMachine:change('start')
+			end
+		end
 	end
 end

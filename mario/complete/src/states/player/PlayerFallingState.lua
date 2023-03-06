@@ -31,11 +31,16 @@ function PlayerFallingState:update(dt)
 	if self.player:groundCollision() then
 		self.player:changeState('idle')
 	end
---[[
-	if self.player.y > 5*TILE_SIZE - CHARACTER_HEIGHT then
-		self.player.y = 5*TILE_SIZE - CHARACTER_HEIGHT
-		self.player.dy = 0
-		self.player:changeState('idle')
-	end]]
+
+	for i, enemy in pairs(self.player.level.enemies) do
+		if enemy.alive then
+			if enemy:collides(self.player) then
+				enemy:changeState('dead')
+				self.player:changeState('jumping', {
+					jumpSpeed = CHARACTER_JUMP/2
+				})
+			end
+		end
+	end
 
 end

@@ -141,7 +141,8 @@ function Level:generateEnemies()
 					level = self,
 					stateMachine = StateMachine {
 						['idle'] = function() return SnailIdleState(snail) end,
-						['moving'] = function() return SnailMovingState(snail) end
+						['moving'] = function() return SnailMovingState(snail) end,
+						['dead'] = function() return SnailDeadState(snail) end
 					}
 				})
 				snail:changeState('idle')

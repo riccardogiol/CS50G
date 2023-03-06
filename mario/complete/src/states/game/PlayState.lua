@@ -2,8 +2,8 @@ PlayState = Class{__includes = BaseState}
 
 function PlayState:init()
 	-- prepare map
-
-	self.backgroundColor = {math.random(), math.random(), math.random(), 1}
+	self.background = math.random(3)
+	self.backgroundX = 0
 
 	self.mapWidth = 100
 
@@ -40,12 +40,16 @@ function PlayState:update(dt)
 	self.player:update(dt)
 	self.level:update(dt)
 	self.cameraScrollX = math.min(math.max(self.player.x - (VIRTUAL_WIDTH/2 - CHARACTER_WIDTH/2), 0), self.mapWidth*TILE_SIZE - VIRTUAL_WIDTH)
+	self.backgroundX = (self.cameraScrollX / 3) % 256
 end
 
 function PlayState:render()
+	love.graphics.draw(gTexture['backgrounds'], gFrames['background'][self.background], math.floor(-self.backgroundX), 50)
+	love.graphics.draw(gTexture['backgrounds'], gFrames['background'][self.background], math.floor(-self.backgroundX) + 256, 50)
+	love.graphics.draw(gTexture['backgrounds'], gFrames['background'][self.background], math.floor(-self.backgroundX), 0)
+	love.graphics.draw(gTexture['backgrounds'], gFrames['background'][self.background], math.floor(-self.backgroundX) + 256, 0)
 	love.graphics.translate(math.floor(- self.cameraScrollX), 0)
 
-	love.graphics.clear(self.backgroundColor)
 	self.level:render()
 	self.player:render()
 

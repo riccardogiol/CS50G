@@ -76,3 +76,8 @@ function Entity:topCollision()
 	return false
 end
 
+function Entity:collides(entity)
+    return not (self.x > entity.x + entity.width or entity.x > self.x + self.width or
+                self.y > entity.y + entity.height or entity.y > self.y + self.height)
+end
+

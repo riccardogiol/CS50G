@@ -13,7 +13,7 @@ function PlayerJumpingState:init(player)
 end
 
 function PlayerJumpingState:enter(enterParams)
-	self.player.dy = CHARACTER_JUMP
+	self.player.dy = enterParams.jumpSpeed
 end
 
 function PlayerJumpingState:update(dt)
@@ -37,6 +37,14 @@ function PlayerJumpingState:update(dt)
 
 		if self.player.dy > 0 then
 			self.player:changeState('falling')
+		end
+	end
+
+	for i, enemy in pairs(self.player.level.enemies) do
+		if enemy.alive then
+			if enemy:collides(self.player) then
+				gStateMachine:change('start')
+			end
 		end
 	end
 

@@ -14,10 +14,17 @@ function love.load()
 
 	gTexture = {
 		['brick'] = love.graphics.newImage('media/images/tiles.png'),
+		['backgrounds'] = love.graphics.newImage('media/images/backgrounds.png'),
 		['character'] = love.graphics.newImage('media/images/character.png'),
 		['snail'] = love.graphics.newImage('media/images/creatures.png'),
 		['tiles'] = love.graphics.newImage('media/images/tiles.png'),
 		['tile_tops'] = love.graphics.newImage('media/images/tile_tops.png')
+	}
+
+	gFont = {
+		['small'] = love.graphics.newFont('media/fonts/font.ttf', 8),
+		['medium'] = love.graphics.newFont('media/fonts/font.ttf', 16),
+		['large'] = love.graphics.newFont('media/fonts/font.ttf', 32)
 	}
 
 	tilesRawQuads = generateQuads(gTexture['tiles'], TILE_SIZE, TILE_SIZE)
@@ -36,16 +43,18 @@ function love.load()
 	
 	gFrames = {
 		['character'] = generateQuads(gTexture['character'], CHARACTER_WIDTH, CHARACTER_HEIGHT),
-		['snail'] = generateQuads(gTexture['snail'], TILE_SIZE, TILE_SIZE)
+		['snail'] = generateQuads(gTexture['snail'], TILE_SIZE, TILE_SIZE),
+		['background'] = generateQuads(gTexture['backgrounds'], 256, 128)
 	}
 
 	-- prepare game states
 
 	gStateMachine = StateMachine ({
+		['start'] = function() return StartState() end,
 		['play'] = function() return PlayState() end
 	})
 
-	gStateMachine:change('play')
+	gStateMachine:change('start')
 
 	love.keyboard.keypressed = {}
 
