@@ -19,8 +19,12 @@ function Level:init(mapWidth, mapHeight)
 	self.tileGroup = math.random(#gTileQuads)
 	self.topGroup = math.random(#gTopQuads)
 
+	self.blocks = {}
 	self.tileMap = self:generateMap()
+
+	self:poseNextLevelBlock()
 	self.enemies = self:generateEnemies()
+	self.bushes = self:generateBushes()
 end
 
 
@@ -114,44 +118,106 @@ function Level:generateMap()
 			end
 		end
 	end
-
 	return map
+end
+
+function Level:poseNextLevelBlock()
+	for r = 1, self.mapHeight do
+		if self.tileMap[r][self.mapWidth].isTopper then
+			local nextLevelBlock
+			nextLevelBlock = Object({
+				x = self.tileMap[r - 1][self.mapWidth].x,
+				y = self.tileMap[r - 1][self.mapWidth].y,
+				width = TILE_SIZE,
+				height = TILE_SIZE,
+				solid = true,
+				texture = 'jump-blocks',
+				frame = 9,
+				onCollide = function ()
+					return {
+						nextLevel = true
+					}
+				end
+			})
+			table.insert(self.blocks, nextLevelBlock)
+		end
+	end
 end
 
 function Level:generateEnemies()
 	snails = {}
 
-	c = 15
-
-	groundFound = false
-	for r = 1, self.mapHeight do
-		if not groundFound then
-			if self.tileMap[r][c].isTopper then
-				groundFound = true
-				local snail
-				snail = Snail({
-					x = self.tileMap[r - 1][c].x,
-					y = self.tileMap[r - 1][c].y,
-					width = TILE_SIZE,
-					height = TILE_SIZE,
-					dx = 0,
-					dy = 0,
-					direction = 'left',
-					texture = 'snail',
-					level = self,
-					stateMachine = StateMachine {
-						['idle'] = function() return SnailIdleState(snail) end,
-						['moving'] = function() return SnailMovingState(snail) end,
-						['dead'] = function() return SnailDeadState(snail) end
-					}
-				})
-				snail:changeState('idle')
-				table.insert(snails, snail)
+	for c = 1, self.mapWidth do
+		if math.random(15) > 1 then
+			goto nextColumn
+		end
+		groundFound = false
+		for r = 1, self.mapHeight do
+			if not groundFound then
+				if self.tileMap[r][c].isTopper then
+					groundFound = true
+					local snail
+					snail = Snail({
+						x = self.tileMap[r - 1][c].x,
+						y = self.tileMap[r - 1][c].y,
+						width = TILE_SIZE,
+						height = TILE_SIZE,
+						dx = 0,
+						dy = 0,
+						direction = 'left',
+						texture = 'snail',
+						level = self,
+						stateMachine = StateMachine {
+							['idle'] = function() return SnailIdleState(snail) end,
+							['moving'] = function() return SnailMovingState(snail) end,
+							['dead'] = function() return SnailDeadState(snail) end
+						}
+					})
+					snail:changeState('idle')
+					table.insert(snails, snail)
+				end
 			end
 		end
+		::nextColumn::
 	end
 	return snails
 end
+
+GOOD_BUSHES = {
+	1, 2, 5, 6, 7
+}
+function Level:generateBushes()
+	bushes = {}
+	bushColor = math.random(5)
+
+	for c = 1, self.mapWidth do
+		if math.random(8) > 1 then
+			goto nextColumn
+		end
+		groundFound = false
+		for r = 1, self.mapHeight do
+			if not groundFound then
+				if self.tileMap[r][c].isTopper then
+					groundFound = true
+					local bush
+					bush = Object({
+						x = self.tileMap[r - 1][c].x,
+						y = self.tileMap[r - 1][c].y,
+						width = TILE_SIZE,
+						height = TILE_SIZE,
+						solid = false,
+						texture = 'bushes',
+						frame = (bushColor - 1) * 7 + GOOD_BUSHES[math.random(#GOOD_BUSHES)],
+					})
+					table.insert(bushes, bush)
+				end
+			end
+		end
+		::nextColumn::
+	end
+	return bushes
+end
+
 
 function Level:tileFromPoint(x, y)
 	if x < 0 then
@@ -177,6 +243,12 @@ function Level:render()
 		for x = 1 , self.mapWidth do
 			self.tileMap[y][x]:render()
 		end
+	end
+	for i, b in pairs(self.bushes) do
+		b:render()
+	end
+	for i, bl in pairs(self.blocks) do
+		bl:render()
 	end
 	for i, e in pairs(self.enemies) do
 		e:render()

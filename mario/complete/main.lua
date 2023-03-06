@@ -18,7 +18,10 @@ function love.load()
 		['character'] = love.graphics.newImage('media/images/character.png'),
 		['snail'] = love.graphics.newImage('media/images/creatures.png'),
 		['tiles'] = love.graphics.newImage('media/images/tiles.png'),
-		['tile_tops'] = love.graphics.newImage('media/images/tile_tops.png')
+		['tile_tops'] = love.graphics.newImage('media/images/tile_tops.png'),
+	    ['bushes'] = love.graphics.newImage('media/images/bushes_and_cacti.png'),
+	    ['jump-blocks'] = love.graphics.newImage('media/images/jump_blocks.png'),
+	    ['gems'] = love.graphics.newImage('media/images/gems.png')
 	}
 
 	gFont = {
@@ -44,7 +47,10 @@ function love.load()
 	gFrames = {
 		['character'] = generateQuads(gTexture['character'], CHARACTER_WIDTH, CHARACTER_HEIGHT),
 		['snail'] = generateQuads(gTexture['snail'], TILE_SIZE, TILE_SIZE),
-		['background'] = generateQuads(gTexture['backgrounds'], 256, 128)
+		['background'] = generateQuads(gTexture['backgrounds'], 256, 128),
+		['bushes'] = generateQuads(gTexture['bushes'], TILE_SIZE, TILE_SIZE),
+	    ['jump-blocks'] = generateQuads(gTexture['jump-blocks'], TILE_SIZE, TILE_SIZE),
+	    ['gems'] = generateQuads(gTexture['gems'], TILE_SIZE, TILE_SIZE)
 	}
 
 	-- prepare game states
@@ -82,6 +88,7 @@ function love.draw()
 	gStateMachine:render()
 
 	love.graphics.setColor(1, 1, 1, 1)
+	love.graphics.setFont(gFont['small'])
 	love.graphics.print('FPS ' .. tostring(love.timer.getFPS()), 2, 2)
 
 	push:finish()

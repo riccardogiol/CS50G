@@ -7,7 +7,9 @@ end
 
 function StartState:update(dt)
     if love.keyboard.keypressed['enter'] or love.keyboard.keypressed['return'] then
-        gStateMachine:change('play')
+        gStateMachine:change('play', {
+            score = 0
+        })
     end
 end
 

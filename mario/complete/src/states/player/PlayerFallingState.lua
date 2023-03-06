@@ -13,6 +13,9 @@ function PlayerFallingState:init(player)
 end
 
 function PlayerFallingState:update(dt)
+	if self.player.y > VIRTUAL_HEIGHT then
+		gStateMachine:change('start')
+	end
 	if love.keyboard.isDown('left') then
 		self.player.dx = CHARACTER_SPEED
 		self.player.x = self.player.x - self.player.dx * dt
@@ -39,6 +42,20 @@ function PlayerFallingState:update(dt)
 				self.player:changeState('jumping', {
 					jumpSpeed = CHARACTER_JUMP/2
 				})
+				self.player.score = self.player.score + 100
+			end
+		end
+	end
+
+	for i, block in pairs(self.player.level.blocks) do
+		if block.solid then
+			if block:collides(self.player) then
+				mess = block:onCollide()
+				if  mess.nextLevel == true then
+					gStateMachine:change('play', {
+						score = self.player.score
+					})
+				end
 			end
 		end
 	end

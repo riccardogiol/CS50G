@@ -35,6 +35,10 @@ function PlayState:init()
 
 end
 
+function PlayState:enter(enterParams)
+	self.player.score = enterParams.score
+end
+
 
 function PlayState:update(dt)
 	self.player:update(dt)
@@ -54,4 +58,8 @@ function PlayState:render()
 	self.player:render()
 
 	love.graphics.translate(math.floor(self.cameraScrollX), 0)
+
+	love.graphics.setColor(1, 1, 1, 1)
+	love.graphics.setFont(gFont['small'])
+	love.graphics.printf("Score: " .. tostring(self.player.score), 0, 3, VIRTUAL_WIDTH - 3, 'right')
 end

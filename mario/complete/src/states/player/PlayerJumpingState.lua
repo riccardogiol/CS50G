@@ -48,4 +48,17 @@ function PlayerJumpingState:update(dt)
 		end
 	end
 
+	for i, block in pairs(self.player.level.blocks) do
+		if block.solid then
+			if block:collides(self.player) then
+				mess = block:onCollide()
+				if mess.nextLevel then 
+					gStateMachine:change('play', {
+						score = self.player.score
+					})
+				end
+			end
+		end
+	end
+
 end

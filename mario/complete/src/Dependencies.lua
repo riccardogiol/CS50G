@@ -8,6 +8,7 @@ require 'src/Animation'
 
 require 'src/StateMachine'
 require 'src/Entity'
+require 'src/Object'
 require 'src/Level'
 require 'src/Tile'
 require 'src/Snail'
