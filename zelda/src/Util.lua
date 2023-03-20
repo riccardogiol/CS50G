@@ -13,3 +13,11 @@ function GenerateQuads(atlas, tilewidth, tileheight)
 
     return quads
 end
+
+function ParseAnimations(animationsDefs)
+    animations = {}
+    for name, animDef in pairs(animationsDefs) do
+        animations[name] = Animation(animDef)
+    end
+    return animations
+end
