@@ -19,5 +19,5 @@ end
 function PlayerIdleState:render()
 	local anim = self.player.currentAnimation
 	love.graphics.draw(gTextures[anim.texture], gFrames[anim.texture][anim:getCurrentFrame()],
-		self.player.x, self.player.y)
+		(self.player.x - self.player.offsetX), (self.player.y - self.player.offsetY) )
 end
