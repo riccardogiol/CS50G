@@ -15,6 +15,9 @@ function Room:init(x, y)
     self.objects = {}
     self:generateObjects()
 
+    self.enemies = {}
+    self:generateEnemies()
+
     self.renderOffsetX = MAP_RENDER_OFFSET_X
     self.renderOffsetY = MAP_RENDER_OFFSET_Y
 
@@ -76,8 +79,8 @@ end
 function Room:generateObjects()
     local switch = Object(
         GAME_OBJECT_DEFS['switch'],
-        math.random(MAP_RENDER_OFFSET_X + TILE_SIZE, VIRTUAL_WIDTH - TILE_SIZE * 2 - 16),
-        math.random(MAP_RENDER_OFFSET_Y + TILE_SIZE, VIRTUAL_HEIGHT - (VIRTUAL_HEIGHT - MAP_HEIGHT * TILE_SIZE) + MAP_RENDER_OFFSET_Y - TILE_SIZE - 16),
+        math.random(MAP_LIMIT_TOP, MAP_LIMIT_BOTTOM),
+        math.random(MAP_LIMIT_LEFT, MAP_LIMIT_RIGHT),
         self.x,
         self.y
     )
@@ -100,6 +103,31 @@ function Room:refreshObjectsPosition()
     end
 end
 
+function Room:generateEnemies()
+    local types = {'skeleton', 'slime', 'bat', 'ghost', 'spider'}
+
+    for i=1,10 do
+        local type = types[math.random(#types)]
+
+        self.enemies[i] = Entity ({
+            x = math.random(MAP_LIMIT_TOP, MAP_LIMIT_BOTTOM),
+            y = math.random(MAP_LIMIT_LEFT, MAP_LIMIT_RIGHT),
+            width = 16,
+            height = 16,
+
+            animations = ParseEnemyAnimations(ENTITY_DEFS[type]),
+            walkSpeed = ENTITY_DEFS[type].walkSpeed or 20,
+            health = 1,
+            death = false
+        })
+
+        self.enemies[i].stateMachine = StateMachine {
+            ['idle'] = function() return EnemyIdleState(self.enemies[i]) end
+        }
+        self.enemies[i]:changeState('idle')
+    end
+end
+
 
 function Room:render()
 	for y = 1, self.height do
@@ -116,5 +144,12 @@ function Room:render()
 
     for i, obj in pairs(self.objects) do
         obj:render()
+    end
+
+
+    for i, ene in pairs(self.enemies) do
+        if not ene.death then
+            ene:render()
+        end
     end
 end

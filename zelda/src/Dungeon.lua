@@ -25,6 +25,11 @@ function Dungeon:init(player)
     Event.on('shift-down', function()
         self:beginShifting(0, VIRTUAL_HEIGHT)
     end)
+
+
+    Event.on('attack', function(hitbox)
+        self:playerAttack(hitbox)
+    end)
 end
 
 
@@ -76,6 +81,15 @@ function Dungeon:finishShifting()
     self.currentRoom:refreshObjectsPosition()
     self.nextRoom = nil
 end
+
+function Dungeon:playerAttack(hitbox)
+	for p, enemy in pairs(self.currentRoom.enemies) do
+		if enemy:collides(hitbox) then
+			enemy.death = true
+		end
+	end
+end
+
 
 function Dungeon:update(dt)
 	if not self.shifting then

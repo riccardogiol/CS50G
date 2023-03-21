@@ -21,10 +21,6 @@ function Object:init(def, x, y, offsetX, offsetY)
     self.onCollide = function() end
 end
 
-function Object:update(dt)
-
-end
-
 function Object:render()
     love.graphics.draw(gTextures[self.texture], gFrames[self.texture][self.states[self.state].frame or self.frame],
         self.offsetX + self.x, self.offsetY + self.y)

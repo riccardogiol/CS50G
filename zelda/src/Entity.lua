@@ -11,9 +11,9 @@ function Entity:init(def)
     self.offsetY = def.offsetY or 0
     
     self.health = def.health
-    self.death = def.health
+    self.death = def.death or false
 
-    self.direction = def.direction
+    self.direction = def.direction or 'down'
     self.animations = def.animations
     self.currentAnimation = nil
     self.stateMachine = def.stateMachine
@@ -73,6 +73,7 @@ function Entity:collides(target)
     return not (self.x + self.width < target.x or self.x > target.x + target.width or
                 self.y + self.height < target.y or self.y > target.y + target.height)
 end
+
 --[[
 function Entity:collidesOffset(offsetX, offsetY, target)
     return not (self.x + offsetX + self.width < target.x or self.x + offsetX > target.x + target.width or

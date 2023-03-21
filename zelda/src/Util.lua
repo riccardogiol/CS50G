@@ -21,3 +21,13 @@ function ParseAnimations(animationsDefs)
     end
     return animations
 end
+
+
+function ParseEnemyAnimations(EnemyDef)
+    animations = {}
+    for name, animDef in pairs(EnemyDef.animations) do
+        animations[name] = Animation(animDef)
+        animations[name].texture = EnemyDef.texture
+    end
+    return animations
+end

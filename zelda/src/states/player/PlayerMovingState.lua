@@ -25,6 +25,11 @@ function PlayerMovingState:update(dt)
 	else
 		self.player:changeState('idle')
 	end
+
+    if love.keyboard.wasPressed('space') then
+        self.player:changeState('sword')
+    end
+
 	touchedWall = self.player:move(dt)
 	if touchedWall then
 		if self.player.direction == 'left' then

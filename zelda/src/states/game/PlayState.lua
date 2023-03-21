@@ -18,7 +18,8 @@ function PlayState:init()
 
 	self.player.stateMachine = StateMachine({
 		['idle'] = function() return PlayerIdleState(self.player) end,
-		['moving'] = function() return PlayerMovingState(self.player, self.dungeon) end
+		['moving'] = function() return PlayerMovingState(self.player, self.dungeon) end,
+		['sword'] = function() return PlayerSwordState(self.player) end
 	})
 
 	self.player:changeState('idle')

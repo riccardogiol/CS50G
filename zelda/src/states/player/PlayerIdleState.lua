@@ -13,6 +13,10 @@ function PlayerIdleState:update(dt)
 		love.keyboard.isDown('up') or love.keyboard.isDown('down') then
 		self.player:changeState('moving')
 	end
+
+    if love.keyboard.wasPressed('space') then
+        self.player:changeState('sword')
+    end
 end
 
 
