@@ -29,18 +29,22 @@ function PlayerMovingState:update(dt)
 	if touchedWall then
 		if self.player.direction == 'left' then
 			if self.player:collidesOffset(- self.player.walkSpeed * dt, 0, self.dungeon.currentRoom.doors['left']) and self.dungeon.currentRoom.doors['left'].open then
+				self.player.y = self.dungeon.currentRoom.doors['left'].y + 4
 				Event.dispatch('shift-left')
 			end
 		elseif self.player.direction == 'right' then
 			if self.player:collidesOffset(self.player.walkSpeed * dt, 0, self.dungeon.currentRoom.doors['right']) and self.dungeon.currentRoom.doors['right'].open then
+				self.player.y = self.dungeon.currentRoom.doors['right'].y + 4
 				Event.dispatch('shift-right')
 			end
 		elseif self.player.direction == 'up' then
 			if self.player:collidesOffset(0, - self.player.walkSpeed * dt, self.dungeon.currentRoom.doors['up']) and self.dungeon.currentRoom.doors['up'].open then
+				self.player.x = self.dungeon.currentRoom.doors['up'].x + 8
 				Event.dispatch('shift-up')
 			end
 		elseif self.player.direction == 'down' then
 			if self.player:collidesOffset(0, self.player.walkSpeed * dt, self.dungeon.currentRoom.doors['down']) and self.dungeon.currentRoom.doors['down'].open then
+				self.player.x = self.dungeon.currentRoom.doors['down'].x + 8
 				Event.dispatch('shift-down')
 			end
 		end

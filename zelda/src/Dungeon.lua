@@ -32,24 +32,25 @@ function Dungeon:beginShifting(shiftX, shiftY)
     self.shifting = true
     self.nextRoom = Room(shiftX, shiftY)
 
-    beginShiftNr = math.random(100)
-
     local nextPlayerX, nextPlayerY = self.player.x, self.player.y
     if shiftX > 0 then
         nextPlayerX = VIRTUAL_WIDTH + (MAP_RENDER_OFFSET_X + TILE_SIZE)
+        self.nextRoom.doors['left'].open = true
     elseif shiftX < 0 then
         nextPlayerX = -VIRTUAL_WIDTH + (MAP_RENDER_OFFSET_X + (MAP_WIDTH * TILE_SIZE) - TILE_SIZE - self.player.width)
+        self.nextRoom.doors['right'].open = true
     elseif shiftY > 0 then
         nextPlayerY = VIRTUAL_HEIGHT + (MAP_RENDER_OFFSET_Y + self.player.height / 2)
+        self.nextRoom.doors['up'].open = true
     else
         nextPlayerY = -VIRTUAL_HEIGHT + MAP_RENDER_OFFSET_Y + (MAP_HEIGHT * TILE_SIZE) - TILE_SIZE - self.player.height
+        self.nextRoom.doors['down'].open = true
     end
 
     Timer.tween(1, {
         [self] = {cameraX = shiftX, cameraY = shiftY},
         [self.player] = {x = nextPlayerX, y = nextPlayerY}
     }):finish(function()
-    	print(beginShiftNr)
         self:finishShifting()
         if shiftX < 0 then
             self.player.x = MAP_RENDER_OFFSET_X + (MAP_WIDTH * TILE_SIZE) - TILE_SIZE - self.player.width
@@ -68,17 +69,24 @@ function Dungeon:finishShifting()
     self.cameraY = 0
     self.shifting = false
 
-    print(self.nextRoom)
     self.currentRoom = self.nextRoom
-    self.currentRoom:generateDoorways()
-    --self.nextRoom = nil
-
     self.currentRoom.x = 0
     self.currentRoom.y = 0 
+    self.currentRoom:generateDoorways()
+    self.currentRoom:refreshObjectsPosition()
+    self.nextRoom = nil
 end
 
 function Dungeon:update(dt)
-	self.player:update(dt)
+	if not self.shifting then
+		self.player:update(dt)
+	end
+
+	for k, obj in pairs(self.currentRoom.objects) do
+        if self.player:collides(obj) then
+            obj:onCollide()
+        end
+    end
 end
 
 function Dungeon:render()

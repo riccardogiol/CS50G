@@ -7,7 +7,7 @@ function Doorway:init(def)
 	self.x = def.x
 	self.y = def.y
 
-	if self.direction == 'left' or direction == 'right' then
+	if self.direction == 'left' or self.direction == 'right' then
 		self.width = 16
 		self.height = 32
 	else
