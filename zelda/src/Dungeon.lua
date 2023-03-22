@@ -79,6 +79,7 @@ function Dungeon:finishShifting()
     self.currentRoom.y = 0 
     self.currentRoom:generateDoorways()
     self.currentRoom:refreshObjectsPosition()
+    self.currentRoom:refreshEnemiesPosition()
     self.nextRoom = nil
 end
 
@@ -94,11 +95,25 @@ end
 function Dungeon:update(dt)
 	if not self.shifting then
 		self.player:update(dt)
+		self.currentRoom:update(dt)
 	end
 
 	for k, obj in pairs(self.currentRoom.objects) do
         if self.player:collides(obj) then
             obj:onCollide()
+        end
+    end
+
+    self.currentRoom:cleanDeadBodies()
+
+	for j, ene in pairs(self.currentRoom.enemies) do
+        if self.player:collides(ene) then
+            self.player:hitBy(ene)
+        end
+        for i, ene2 in pairs(self.currentRoom.enemies) do
+        	if ene:collides(ene2) then
+        		--ene:changeState('idle')
+        	end
         end
     end
 end

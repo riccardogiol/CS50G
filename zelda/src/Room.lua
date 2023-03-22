@@ -108,26 +108,51 @@ function Room:generateEnemies()
 
     for i=1,10 do
         local type = types[math.random(#types)]
-
-        self.enemies[i] = Entity ({
+        local enemy = Entity ({
             x = math.random(MAP_LIMIT_TOP, MAP_LIMIT_BOTTOM),
             y = math.random(MAP_LIMIT_LEFT, MAP_LIMIT_RIGHT),
             width = 16,
             height = 16,
+            offsetX = -self.x,
+            offsetY = -self.y,
 
             animations = ParseEnemyAnimations(ENTITY_DEFS[type]),
             walkSpeed = ENTITY_DEFS[type].walkSpeed or 20,
             health = 1,
             death = false
         })
+        self.enemies[i] = enemy
 
         self.enemies[i].stateMachine = StateMachine {
-            ['idle'] = function() return EnemyIdleState(self.enemies[i]) end
+            ['idle'] = function() return EnemyIdleState(enemy) end,
+            ['moving'] = function() return EnemyMovingState(enemy) end
         }
         self.enemies[i]:changeState('idle')
     end
 end
 
+function Room:refreshEnemiesPosition()
+    for i, ene in pairs(self.enemies) do
+        ene.offsetX = self.x
+        ene.offsetY = self.y
+    end
+end
+
+function Room:cleanDeadBodies()
+    for i = #self.enemies, 1, -1 do
+        if self.enemies[i].death == true then
+            table.remove(self.enemies, i)
+        end
+    end
+end
+
+function Room:update(dt)
+    for i, ene in pairs(self.enemies) do
+        if not ene.death then
+            ene:update(dt)
+        end
+    end
+end
 
 function Room:render()
 	for y = 1, self.height do
@@ -152,4 +177,7 @@ function Room:render()
             ene:render()
         end
     end
+
+    --debug clean bodies
+    love.graphics.print(tostring(#self.enemies), 2, 20)
 end

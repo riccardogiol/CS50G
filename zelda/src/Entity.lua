@@ -18,6 +18,13 @@ function Entity:init(def)
     self.currentAnimation = nil
     self.stateMachine = def.stateMachine
 
+    self.invulnerable = false
+    self.invulnerableTimer = 0
+    self.invulnerableDuration = 1.5
+    self.flashTimer = 0
+    self.flashDuration = 0.1
+    self.flashState = false
+
 end
 
 function Entity:changeAnimation(name)
@@ -29,12 +36,30 @@ function Entity:changeState(name)
 end
 
 function Entity:update(dt)
+	if self.invulnerable then
+		self.invulnerableTimer = self.invulnerableTimer + dt
+		self.flashTimer = self.flashTimer + dt
+		if self.invulnerableTimer > self.invulnerableDuration then
+			self.invulnerableTimer = 0
+			self.invulnerable = false
+			self.flashTimer = 0
+			self.flashState = false
+		elseif self.flashTimer > self.flashDuration then
+			self.flashTimer = 0
+			self.flashState = not self.flashState
+		end
+	end
 	self.stateMachine:update(dt)
 	self.currentAnimation:update(dt)
 end
 
 function Entity:render()
+	if self.flashState then
+		love.graphics.setColor(1, 1, 1, 0.3)
+	end
     self.stateMachine:render()
+    love.graphics.setColor(1, 1, 1, 1)
+
 end
 
 function Entity:move(dt)
@@ -79,3 +104,10 @@ function Entity:collidesOffset(offsetX, offsetY, target)
     return not (self.x + offsetX + self.width < target.x or self.x + offsetX > target.x + target.width or
                 self.y + offsetY + self.height < target.y or self.y + offsetY > target.y + target.height)
 end]]
+
+function Entity:hitBy(enemy)
+	if not self.invulnerable then
+	    self.health = self.health - 1
+	    self.invulnerable = true
+	end
+end

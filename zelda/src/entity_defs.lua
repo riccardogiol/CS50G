@@ -17,6 +17,7 @@ ENTITY_DEFS = {
             ['walk-down'] = {
                 frames = {1, 2, 3, 4},
                 interval = 0.15,
+                looping = true,
                 texture = 'character-walk'
             },
             ['walk-up'] = {
@@ -80,18 +81,22 @@ ENTITY_DEFS = {
         animations = {
             ['walk-left'] = {
                 frames = {22, 23, 24, 23},
+                looping = true,
                 interval = 0.2
             },
             ['walk-right'] = {
                 frames = {34, 35, 36, 35},
+                looping = true,
                 interval = 0.2
             },
             ['walk-down'] = {
                 frames = {10, 11, 12, 11},
+                looping = true,
                 interval = 0.2
             },
             ['walk-up'] = {
                 frames = {46, 47, 48, 47},
+                looping = true,
                 interval = 0.2
             },
             ['idle-left'] = {
@@ -113,18 +118,22 @@ ENTITY_DEFS = {
         animations = {
             ['walk-left'] = {
                 frames = {61, 62, 63, 62},
+                looping = true,
                 interval = 0.2
             },
             ['walk-right'] = {
                 frames = {73, 74, 75, 74},
+                looping = true,
                 interval = 0.2
             },
             ['walk-down'] = {
                 frames = {49, 50, 51, 50},
+                looping = true,
                 interval = 0.2
             },
             ['walk-up'] = {
                 frames = {86, 86, 87, 86},
+                looping = true,
                 interval = 0.2
             },
             ['idle-left'] = {
@@ -146,34 +155,42 @@ ENTITY_DEFS = {
         animations = {
             ['walk-left'] = {
                 frames = {64, 65, 66, 65},
+                looping = true,
                 interval = 0.2
             },
             ['walk-right'] = {
                 frames = {76, 77, 78, 77},
+                looping = true,
                 interval = 0.2
             },
             ['walk-down'] = {
                 frames = {52, 53, 54, 53},
+                looping = true,
                 interval = 0.2
             },
             ['walk-up'] = {
                 frames = {88, 89, 90, 89},
+                looping = true,
                 interval = 0.2
             },
             ['idle-left'] = {
                 frames = {64, 65, 66, 65},
+                looping = true,
                 interval = 0.2
             },
             ['idle-right'] = {
                 frames = {76, 77, 78, 77},
+                looping = true,
                 interval = 0.2
             },
             ['idle-down'] = {
                 frames = {52, 53, 54, 53},
+                looping = true,
                 interval = 0.2
             },
             ['idle-up'] = {
                 frames = {88, 89, 90, 89},
+                looping = true,
                 interval = 0.2
             }
         }
@@ -183,18 +200,22 @@ ENTITY_DEFS = {
         animations = {
             ['walk-left'] = {
                 frames = {67, 68, 69, 68},
+                looping = true,
                 interval = 0.2
             },
             ['walk-right'] = {
                 frames = {79, 80, 81, 80},
+                looping = true,
                 interval = 0.2
             },
             ['walk-down'] = {
                 frames = {55, 56, 57, 56},
+                looping = true,
                 interval = 0.2
             },
             ['walk-up'] = {
                 frames = {91, 92, 93, 92},
+                looping = true,
                 interval = 0.2
             },
             ['idle-left'] = {
@@ -216,18 +237,22 @@ ENTITY_DEFS = {
         animations = {
             ['walk-left'] = {
                 frames = {70, 71, 72, 71},
+                looping = true,
                 interval = 0.2
             },
             ['walk-right'] = {
                 frames = {82, 83, 84, 83},
+                looping = true,
                 interval = 0.2
             },
             ['walk-down'] = {
                 frames = {58, 59, 60, 59},
+                looping = true,
                 interval = 0.2
             },
             ['walk-up'] = {
                 frames = {94, 95, 96, 95},
+                looping = true,
                 interval = 0.2
             },
             ['idle-left'] = {

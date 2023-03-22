@@ -3,7 +3,7 @@ Animation = Class{}
 function Animation:init(def)
 	self.frames = def.frames
 	self.texture = def.texture
-	self.interval = def.interval
+	self.interval = def.interval or 1
 	self.looping = def.looping
 	self.loopExecuted = false
 
