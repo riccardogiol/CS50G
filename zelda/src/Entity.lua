@@ -111,3 +111,46 @@ function Entity:hitBy(enemy)
 	    self.invulnerable = true
 	end
 end
+
+function Entity:changeDirection()
+	local directions = {'left', 'right', 'up', 'down'}
+	if self.direction == 'left' then
+		table.remove(directions, 1)
+		self.direction = directions[math.random(#directions)]
+	elseif self.direction == 'right' then
+		table.remove(directions, 2)
+		self.direction = directions[math.random(#directions)]
+	elseif self.direction == 'up' then
+		table.remove(directions, 3)
+		self.direction = directions[math.random(#directions)]
+	elseif self.direction == 'down' then
+		table.remove(directions, 4)
+		self.direction = directions[math.random(#directions)]
+	end
+end
+ --[[
+function Entity:changeDirection()
+	local directions = {'left', 'right', 'up', 'down'}
+	if self.direction == 'left' then
+		table.remove(table, pos)
+		self.direction = 'right'
+	elseif self.direction == 'right' then
+		self.direction = 'left'
+	elseif self.direction == 'up' then
+		self.direction = 'down'
+	elseif self.direction == 'down' then
+		self.direction = 'up'
+	end
+end
+
+function Entity:moveOutfrom(target)
+	if self.direction == 'left' then
+		self.x = target.x - self.width - 2
+	elseif self.direction == 'right' then
+		self.x = target.x + target.width + 2
+	elseif self.direction == 'up' then
+		self.y = target.y - self.height - 2
+	elseif self.direction == 'down' then
+		self.y = target.y + target.height + 2
+	end
+end]]

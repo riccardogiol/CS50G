@@ -57,5 +57,8 @@ function PlayState:render()
         love.graphics.draw(gTextures['hearts'], gFrames['hearts'][heartFrame], VIRTUAL_WIDTH - i * (TILE_SIZE + 1), 2, 0, -1, 1, TILE_SIZE)
         healthLeft = healthLeft - 2
     end
+    love.graphics.setColor(1, 1, 1, 1)
+    love.graphics.setFont(gFonts['medium'])
+    love.graphics.printf('Score: ' .. tostring(self.player.score), 0, 2, VIRTUAL_WIDTH - TILE_SIZE*4, 'right')
 	love.graphics.pop()
 end

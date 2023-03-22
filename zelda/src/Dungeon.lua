@@ -87,6 +87,7 @@ function Dungeon:playerAttack(hitbox)
 	for p, enemy in pairs(self.currentRoom.enemies) do
 		if enemy:collides(hitbox) then
 			enemy.death = true
+			self.player.score = self.player.score + 10
 		end
 	end
 end
@@ -109,10 +110,15 @@ function Dungeon:update(dt)
 	for j, ene in pairs(self.currentRoom.enemies) do
         if self.player:collides(ene) then
             self.player:hitBy(ene)
+            if self.player.health <= 0 then
+            	gStateMachine:change('gameover')
+            end
         end
-        for i, ene2 in pairs(self.currentRoom.enemies) do
-        	if ene:collides(ene2) then
-        		--ene:changeState('idle')
+        for i = 1, #self.currentRoom.enemies do
+        	if i ~= j and ene:collides(self.currentRoom.enemies[i]) then
+        		ene:changeDirection()
+        		ene:move(dt)
+        		ene:changeState('moving')
         	end
         end
     end

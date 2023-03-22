@@ -2,6 +2,7 @@ Player = Class{__includes = Entity}
 
 function Player:init(def)
 	Entity.init(self, def)
+	self.score = def.score or 0
 end
 
 function Player:update(dt)

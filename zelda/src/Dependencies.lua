@@ -19,6 +19,8 @@ require 'src/Util'
 
 require 'src/states/BaseState'
 require 'src/states/game/PlayState'
+require 'src/states/game/StartState'
+require 'src/states/game/GameoverState'
 require 'src/states/enemy/EnemyIdleState'
 require 'src/states/enemy/EnemyMovingState'
 require 'src/states/player/PlayerIdleState'
@@ -52,6 +54,6 @@ gFonts = {
     ['large'] = love.graphics.newFont('media/fonts/font.ttf', 32),
     ['gothic-medium'] = love.graphics.newFont('media/fonts/GothicPixels.ttf', 16),
     ['gothic-large'] = love.graphics.newFont('media/fonts/GothicPixels.ttf', 32),
-    ['zelda'] = love.graphics.newFont('media/fonts/zelda.otf', 64),
+    ['zelda'] = love.graphics.newFont('media/fonts/zelda.otf', 52),
     ['zelda-small'] = love.graphics.newFont('media/fonts/zelda.otf', 32)
 }

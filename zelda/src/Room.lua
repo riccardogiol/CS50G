@@ -106,7 +106,9 @@ end
 function Room:generateEnemies()
     local types = {'skeleton', 'slime', 'bat', 'ghost', 'spider'}
 
-    for i=1,10 do
+    local numEnemies = math.random(6, 10)
+    for i=1,numEnemies do
+        ::nextEnemy::
         local type = types[math.random(#types)]
         local enemy = Entity ({
             x = math.random(MAP_LIMIT_TOP, MAP_LIMIT_BOTTOM),
@@ -121,6 +123,11 @@ function Room:generateEnemies()
             health = 1,
             death = false
         })
+        for j, ene in pairs(self.enemies) do
+            if enemy:collides(ene) then
+                goto nextEnemy
+            end
+        end
         self.enemies[i] = enemy
 
         self.enemies[i].stateMachine = StateMachine {

@@ -12,9 +12,11 @@ function love.load()
     love.keyboard.keyPressed = {}
 
 	gStateMachine = StateMachine ({
-		['play'] = function() return PlayState() end
+		['start'] = function() return StartState() end,
+		['play'] = function() return PlayState() end,
+		['gameover'] = function() return GameoverState() end
 	})
-	gStateMachine:change('play')
+	gStateMachine:change('start')
 end
 
 function love.resize(w, h)
