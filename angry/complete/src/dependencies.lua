@@ -6,6 +6,7 @@ require 'src/utils'
 require 'src/constants'
 
 require 'src/Alien'
+require 'src/Obstacle'
 require 'src/Background'
 require 'src/Level'
 
@@ -18,13 +19,18 @@ love.graphics.setDefaultFilter('nearest', 'nearest')
 gTextures = {
     ['aliens'] = love.graphics.newImage('media/images/aliens.png'),
     ['tiles'] = love.graphics.newImage('media/images/tiles.png'),
+    ['wood'] = love.graphics.newImage('media/images/wood.png'),
     ['colored-desert'] = love.graphics.newImage('media/images/colored_desert.png')
 }
 
 
 gFrames = {
     ['aliens'] = GenerateQuads(gTextures['aliens'], 35, 35),
-    ['tiles'] = GenerateQuads(gTextures['tiles'], 35, 35)
+    ['tiles'] = GenerateQuads(gTextures['tiles'], 35, 35),
+    ['wood'] = {
+        ['horizontal'] = love.graphics.newQuad(0, 35, 110, 35, gTextures['wood']:getDimensions()),
+        ['vertical'] = love.graphics.newQuad(355, 355, 35, 110, gTextures['wood']:getDimensions())
+    }
 }
 
 gFonts = {
