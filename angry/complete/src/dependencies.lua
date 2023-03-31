@@ -11,6 +11,7 @@ require 'src/StateMachine'
 require 'src/states/BaseState'
 require 'src/states/game/StartState'
 
+love.graphics.setDefaultFilter('nearest', 'nearest')
 gTextures = {
     ['aliens'] = love.graphics.newImage('media/images/aliens.png'),
     ['colored-desert'] = love.graphics.newImage('media/images/colored_desert.png')

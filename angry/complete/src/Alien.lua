@@ -19,5 +19,5 @@ function Alien:init(world, type, x, y, userData)
 end
 
 function Alien:render()
-	love.graphics.draw(gTextures['aliens'], gFrames['aliens'][self.sprite], math.floor(self.body:getX()), math.floor(self.body:getY()), self.body:getAngle(), 1, 1, 17.5, 17.5)
+    love.graphics.draw(gTextures['aliens'], gFrames['aliens'][self.sprite], math.floor(self.body:getX()), math.floor(self.body:getY()), self.body:getAngle(), 1, 1, 17.5, 17.5)
 end

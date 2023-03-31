@@ -1,7 +1,6 @@
 require 'src/dependencies'
 
 function love.load()
-	love.graphics.setDefaultFilter('nearest', 'nearest')
 	push:setupScreen(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT, {
         fullscreen = false,
         vsync = true,
@@ -30,5 +29,8 @@ end
 function love.draw()
 	push:start()
 	gStateMachine:render()
+	love.graphics.setColor(1, 0, 1, 1)
+	love.graphics.setFont(gFonts['small'])
+	love.graphics.print(tostring(love.timer.getFPS()), 2, 2)
 	push:finish()
 end
