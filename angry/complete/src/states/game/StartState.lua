@@ -1,6 +1,8 @@
 StartState = Class{__includes = BaseState}
 
 function StartState:init()
+	self.background = Background()
+
 	self.world = love.physics.newWorld(0, 300)
 	self.groundBody = love.physics.newBody(self.world, 0, VIRTUAL_HEIGHT, 'static')
 	self.groundShape = love.physics.newEdgeShape(0, 0, VIRTUAL_WIDTH, 0)
@@ -24,9 +26,14 @@ function StartState:update(dt)
     if love.keyboard.keypressed['escape'] then
         love.event.quit()
     end
+    if love.mouse.keypressed[1] then
+    	gStateMachine:change('play')
+    end
 end
 
 function StartState:render()
+	self.background:render()
+
 	for i, a in pairs(self.aliens) do
 		a:render()
 	end

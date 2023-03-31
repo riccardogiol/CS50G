@@ -8,15 +8,26 @@ function love.load()
     })
 
     gStateMachine = StateMachine ({
-    	['start'] = function() return StartState() end
+    	['start'] = function() return StartState() end,
+    	['play'] = function() return PlayState() end
     })
     gStateMachine:change('start')
 
 	love.keyboard.keypressed = {}
+	love.mouse.keypressed = {}
+	love.mouse.keyreleased = {}
 end
 
 function love.keypressed(key) 
 	love.keyboard.keypressed[key] = true
+end
+
+function love.mousepressed(x, y, button)
+	love.mouse.keypressed[button] = true
+end
+
+function love.mousereleased(x, y, button)
+	love.mouse.keyreleased[button] = true
 end
 
 
@@ -24,6 +35,8 @@ function love.update(dt)
 	gStateMachine:update(dt)
 
 	love.keyboard.keypressed = {}
+	love.mouse.keypressed = {}
+	love.mouse.keyreleased = {}
 end
 
 function love.draw()
