@@ -14,7 +14,7 @@ function StartState:init()
 	self.rightWallFixture = love.physics.newFixture(self.rightWallBody, self.wallShape)
 
 	self.aliens = {}
-	for i = 0, 100 do
+	for i = 1, 100 do
 		self.aliens[i] = Alien(self.world, 'square', math.random(20, VIRTUAL_WIDTH - 20), math.random(10, 50))
 	end
 end

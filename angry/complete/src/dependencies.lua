@@ -6,6 +6,7 @@ require 'src/utils'
 require 'src/constants'
 
 require 'src/Alien'
+require 'src/AlienLauncher'
 require 'src/Obstacle'
 require 'src/Background'
 require 'src/Level'

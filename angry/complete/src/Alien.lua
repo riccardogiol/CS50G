@@ -1,10 +1,11 @@
 Alien = Class{}
 
-function Alien:init(world, type, x, y, userData)
+function Alien:init(world, type, x, y, bodyType, userData)
 	self.world = world
 	self.type = type or 'square'
+    self.bodyType = bodyType or 'dynamic'
 
-	self.body = love.physics.newBody(self.world, x, y, 'dynamic')
+	self.body = love.physics.newBody(self.world, x, y, self.bodyType)
 
 	if self.type == 'square' then
         self.shape = love.physics.newRectangleShape(35, 35)
