@@ -29,7 +29,7 @@ function PlayState:update(dt)
 			self.background:update(dt)
 		end
 	end
-	self.level:update(dt)
+	self.level:update(dt, self.levelTranslation)
 end
 
 function PlayState:render(dt)

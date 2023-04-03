@@ -10,6 +10,7 @@ function Obstacle:init(world, type, x, y)
 		self.shape = love.physics.newRectangleShape(35, 110)
 	end
 	self.fixture = love.physics.newFixture(self.body, self.shape)
+	self.fixture:setUserData('Obstacle')
 end
 
 function Obstacle:render()

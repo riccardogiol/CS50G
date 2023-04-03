@@ -16,6 +16,7 @@ function Alien:init(world, type, x, y, bodyType, userData)
     end
 
     self.fixture = love.physics.newFixture(self.body, self.shape)
+    self.fixture:setUserData(userData)
 
 end
 

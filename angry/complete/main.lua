@@ -16,10 +16,15 @@ function love.load()
 	love.keyboard.keypressed = {}
 	love.mouse.keypressed = {}
 	love.mouse.keyreleased = {}
+
+	paused = false
 end
 
 function love.keypressed(key) 
 	love.keyboard.keypressed[key] = true
+	if key == 'p' then
+		paused = not paused
+	end
 end
 
 function love.mousepressed(x, y, button)
@@ -32,11 +37,13 @@ end
 
 
 function love.update(dt)
-	gStateMachine:update(dt)
+	if not paused then
+		gStateMachine:update(dt)
 
-	love.keyboard.keypressed = {}
-	love.mouse.keypressed = {}
-	love.mouse.keyreleased = {}
+		love.keyboard.keypressed = {}
+		love.mouse.keypressed = {}
+		love.mouse.keyreleased = {}
+	end
 end
 
 function love.draw()
