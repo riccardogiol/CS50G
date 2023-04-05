@@ -13,6 +13,7 @@ function StartState:update(dt)
 			1, 
 			function()
 				gStateStack:pop()
+				gStateStack:push(PlayState())
 				gStateStack:push(DialogueState("We are now in the play state!"))
 				gStateStack:push(FadeState(
 					{ r = 1, g = 1, b = 1, a = 1},
