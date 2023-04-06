@@ -5,17 +5,22 @@ Timer = require 'lib/knife/timer'
 require 'src/constants'
 require 'src/utils'
 require 'src/StateStack'
+require 'src/StateMachine'
+require 'src/Animation'
 
 require 'src/world/Level'
 require 'src/world/TileMap'
 require 'src/world/Tile'
 require 'src/world/tile_ids'
 
+require 'src/entity/Entity'
+
 require 'src/states/BaseState'
 require 'src/states/game/StartState'
 require 'src/states/game/PlayState'
 require 'src/states/game/DialogueState'
 require 'src/states/game/FadeState'
+require 'src/states/entity/PlayerIdleState'
 
 
 love.graphics.setDefaultFilter('nearest', 'nearest')
