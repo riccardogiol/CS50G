@@ -8,6 +8,9 @@ require 'src/StateStack'
 require 'src/StateMachine'
 require 'src/Animation'
 
+require 'src/gui/Panel'
+require 'src/gui/Textbox'
+
 require 'src/world/Level'
 require 'src/world/TileMap'
 require 'src/world/Tile'

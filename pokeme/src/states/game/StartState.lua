@@ -14,7 +14,7 @@ function StartState:update(dt)
 			function()
 				gStateStack:pop()
 				gStateStack:push(PlayState())
-				gStateStack:push(DialogueState("We are now in the play state!"))
+				gStateStack:push(DialogueState('We are nthe play state!We are now in the play state!We are now in the play state!We are now in the play state!We are now in the play state!We are now in the play state! We are now in the play state!We are now in the play state!We are now in the play state!We are now in the play state!We are now in the play state!We are now in the play state!We are now in the play state!We are now in the play state!We are now in the play state!We are now in the play state!We are now in the play state!We are now in the play state!We are now in the play state!'))
 				gStateStack:push(FadeState(
 					{ r = 1, g = 1, b = 1, a = 1},
 					{ r = 1, g = 1, b = 1, a = 0},
