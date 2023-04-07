@@ -1,9 +1,6 @@
 StartState = Class{__includes = BaseState}
 
-function StartState:init()
-	--self.sprite
-
-end
+function StartState:init() end
 
 function StartState:update(dt)
 	if love.keyboard.keypressed['enter'] or love.keyboard.keypressed['return'] then

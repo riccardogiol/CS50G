@@ -36,6 +36,7 @@ function PlayerWalkState:update(dt)
 	else
 		self.player.mapX = finalMapX
 		self.player.mapY = finalMapY
+		self:checkEncounters()
 		Timer.tween(0.3, {
 			[self.player] = {x = finalX, y = finalY}
 		}):finish(
@@ -56,6 +57,15 @@ function PlayerWalkState:update(dt)
 				self.player:changeState('idle')
 			end
 		end)
+	end
+end
+
+function PlayerWalkState:checkEncounters()
+	if self.tileMap.tiles[self.player.mapY][self.player.mapX].id == TILE_IDS['tall-grass'] then
+		if math.random(5) == 1 then
+			gStateStack:push(BattleState())
+			gStateStack:push(BattleMenuState())
+		end
 	end
 end
 
