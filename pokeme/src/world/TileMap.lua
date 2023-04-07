@@ -20,6 +20,23 @@ function TileMap:render()
 	end
 end
 
+function TileMap:renderForegroundObjects(player)
+	local tile = self.tiles[player.mapY][player.mapX]
+	local yDiff = player.y < tile.y - (player.height - TILE_SIZE) -2
+	if tile.id == TILE_IDS['tall-grass'] and yDiff then
+		love.graphics.draw(gTextures['tiles'], gFrames['tiles'][TILE_IDS['half-tall-grass']], tile.x, tile.y)
+	end
+end
+
+function TileMap:walkableTile(x, y)
+	if x < 1 or x > self.mapWidth then
+		return false
+	elseif y < 1 or y > self.mapHeight then
+		return false
+	end
+	return true
+end
+
 
 function TileMap:randomizeMap()
 	local num_1_flower = math.random(10, 15)

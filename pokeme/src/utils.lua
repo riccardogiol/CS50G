@@ -16,3 +16,11 @@ function GenerateQuads(atlas, tilewidth, tileheight)
 
     return spritesheet
 end
+
+function GenerateAnimations(defs)
+    animations = {}
+    for name, animDef in pairs(defs) do
+        animations[name] = Animation(animDef)
+    end
+    return animations
+end

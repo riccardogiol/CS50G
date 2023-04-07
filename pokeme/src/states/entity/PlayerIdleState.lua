@@ -6,13 +6,20 @@ function PlayerIdleState:init(player)
 end
 
 function PlayerIdleState:update(dt)
-	--commands
+	if love.keyboard.isDown('left') then
+		self.player.direction = 'left'
+		self.player:changeState('walk')
+	elseif love.keyboard.isDown('right') then
+		self.player.direction = 'right'
+		self.player:changeState('walk')
+	elseif love.keyboard.isDown('up') then
+		self.player.direction = 'up'
+		self.player:changeState('walk')
+	elseif love.keyboard.isDown('down') then
+		self.player.direction = 'down'
+		self.player:changeState('walk')
+	end
 	self.player.currentAnimation:update(dt)
 end
 
-function PlayerIdleState:render()
-	-- move this to general
-	local anim = self.player.currentAnimation
-	love.graphics.draw(gTextures[anim.texture], gFrames[anim.texture][anim:getCurrentFrame()],
-		self.player.x, self.player.y)
-end
+function PlayerIdleState:render() end

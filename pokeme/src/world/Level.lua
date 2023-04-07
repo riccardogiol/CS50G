@@ -9,17 +9,11 @@ function Level:init()
 		mapY = 5, 
 		width = 16,
 		height = 16,
-		animations = {
-			['idle-down'] = Animation({
-				texture = 'entities',
-				frames = {5},
-				interval = 1,
-				loop = false
-			})
-		}
+		animations = GenerateAnimations(PLAYER_ANIMATIONS)
 	})
 	self.player.stateMachine = StateMachine({
-		['idle'] = function() return PlayerIdleState(self.player) end
+		['idle'] = function() return PlayerIdleState(self.player) end,
+		['walk'] = function() return PlayerWalkState(self.player, self.tileMap) end
 	})
 	self.player:changeState('idle')
 end
@@ -31,4 +25,5 @@ end
 function Level:render()
 	self.tileMap:render()
 	self.player:render()
+	self.tileMap:renderForegroundObjects(self.player)
 end
