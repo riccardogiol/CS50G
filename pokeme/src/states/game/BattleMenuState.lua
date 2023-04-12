@@ -13,7 +13,7 @@ function BattleMenuState:init(battleState)
     			text = 'Fight',
     			callback = function()
     				print(1)
-    				self.battleState.playerPV.currentValue = 70
+    				self.battleState.playerPV.currentValue = self.battleState.playerPV.currentValue - 10
     			end
     		},
     		{

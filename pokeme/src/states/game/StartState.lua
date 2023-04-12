@@ -1,6 +1,25 @@
 StartState = Class{__includes = BaseState}
 
-function StartState:init() end
+function StartState:init()
+	self.sprite = BattleSprite(POKEMON_DEFS[POKEMON_IDS[math.random(#POKEMON_IDS)]].battleSpriteFront,
+		VIRTUAL_WIDTH / 2 - 32,
+		VIRTUAL_HEIGHT / 2 - 16)
+
+    self.tween = Timer.every(3, function()
+        Timer.tween(0.2, {
+            [self.sprite] = {x = -64}
+        })
+        :finish(function()
+            self.sprite = BattleSprite(POKEMON_DEFS[POKEMON_IDS[math.random(#POKEMON_IDS)]].battleSpriteFront, 
+            	VIRTUAL_WIDTH,
+            	VIRTUAL_HEIGHT / 2 - 16)
+
+            Timer.tween(0.2, {
+                [self.sprite] = {x = VIRTUAL_WIDTH / 2 - 32}
+            })
+        end)
+    end)
+end
 
 function StartState:update(dt)
 	if love.keyboard.keypressed['enter'] or love.keyboard.keypressed['return'] then
@@ -34,6 +53,5 @@ function StartState:render()
     love.graphics.setColor(45/255, 184/255, 45/255, 124/255)
     love.graphics.ellipse('fill', VIRTUAL_WIDTH / 2, VIRTUAL_HEIGHT / 2 + 32, 72, 24)
 
-    love.graphics.setColor(1, 1, 1, 1)
-    --love.graphics.draw(gTextures[self.sprite], self.spriteX, self.spriteY)
+    self.sprite:render()
 end

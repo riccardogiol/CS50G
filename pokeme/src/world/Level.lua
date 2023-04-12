@@ -4,7 +4,7 @@ function Level:init()
 	self.tileMap = TileMap(24, 14)
 	self.tileMap:randomizeMap()
 
-	self.player = Entity({
+	self.player = Player({
 		mapX = 5,
 		mapY = 5, 
 		width = 16,

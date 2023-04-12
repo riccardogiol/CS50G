@@ -1,13 +1,39 @@
 BattleState = Class{__includes=BaseState}
 
-function BattleState:init()
+function BattleState:init(player)
+	self.player = player
+	self.opponentPokemon = Pokemon(Pokemon.getRandomDef(), 5)
+	self.playedPokemon = self.player.party.pokemons[1]
+
+	self.playerSprite = BattleSprite(self.playedPokemon.battleSpriteBack, -64, VIRTUAL_HEIGHT - 128)
+    self.opponentSprite = BattleSprite(self.opponentPokemon.battleSpriteFront, VIRTUAL_WIDTH, 8)
+
 	self.playerPV = ProgressBar({
-		x = 50,
-		y = 50, 
-		width = 60, 
-		height = 3, 
-		maxValue = 100, 
-		currentValue = 100, 
+		x = VIRTUAL_WIDTH - 160,
+		y = VIRTUAL_HEIGHT - 80, 
+		width = 150, 
+		height = 4, 
+		maxValue = self.playedPokemon.HP, 
+		currentValue = self.playedPokemon.CurrentHP, 
+		color = {1, 0, 0, 1}
+	})
+	self.playerXP = ProgressBar {
+        x = VIRTUAL_WIDTH - 160,
+        y = VIRTUAL_HEIGHT - 73,
+        width = 150,
+        height = 4,
+        color = {0, 1, 1, 1},
+        currentValue = self.playedPokemon.currentExp,
+        maxValue = self.playedPokemon.expToLevel
+    }
+
+	self.opponentPV = ProgressBar({
+		x = 8,
+		y = 8, 
+		width = 150, 
+		height = 4, 
+		maxValue = self.opponentPokemon.HP, 
+		currentValue = self.opponentPokemon.CurrentHP, 
 		color = {1, 0, 0, 1}
 	})
 
@@ -29,12 +55,18 @@ end
 function BattleState:startBattle()
 	self.battleStarted = true
 	Timer.tween(1, {
+		[self.playerSprite] = {x = 32},
+		[self.opponentSprite] = {x = VIRTUAL_WIDTH - 96},
 		[self] = {playerCircleX = 66, opponentCircleX = VIRTUAL_WIDTH - 70}
 	}):finish(function()
-		gStateStack:push(DialogueState(
-			'Battle is gonna start soon',
+		gStateStack:push(BattleDialogueState(
+			'A wild ' .. self.opponentPokemon.name .. ' appeared!',
 			function()
-				gStateStack:push(BattleMenuState(self))
+				gStateStack:push(BattleDialogueState(
+					'Go ' .. self.playedPokemon.name .. '!',
+					function()
+						gStateStack:push(BattleMenuState(self))
+					end))
 			end))
 		self.renderPokeSpecs = true
 	end)
@@ -46,8 +78,20 @@ function BattleState:render()
     love.graphics.setColor(45/255, 184/255, 45/255, 124/255)
     love.graphics.ellipse('fill', self.opponentCircleX, 60, 72, 24)
     love.graphics.ellipse('fill', self.playerCircleX, VIRTUAL_HEIGHT - 64, 72, 24)
+
+    self.playerSprite:render()
+    self.opponentSprite:render()
     if self.renderPokeSpecs then
 		self.playerPV:render()
+		self.opponentPV:render()
+		self.playerXP:render()
+
+		love.graphics.setColor(0, 0, 0, 1)
+        love.graphics.setFont(gFonts['small'])
+        love.graphics.print('LV ' .. tostring(self.playedPokemon.level),
+            self.playerPV.x, self.playerPV.y - 10)
+        love.graphics.print('LV ' .. tostring(self.opponentPokemon.level),
+            self.opponentPV.x, self.opponentPV.y + 8)
 	end
 	self.bottomPanel:render()
 end

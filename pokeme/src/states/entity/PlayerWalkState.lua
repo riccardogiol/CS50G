@@ -68,7 +68,7 @@ function PlayerWalkState:checkEncounters()
 			{ r = 1, g = 1, b = 1, a = 1},
 			0.5, 
 			function()
-				gStateStack:push(BattleState())
+				gStateStack:push(BattleState(self.player))
 				gStateStack:push(FadeState(
 					{ r = 1, g = 1, b = 1, a = 1},
 					{ r = 1, g = 1, b = 1, a = 0},
