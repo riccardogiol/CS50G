@@ -63,8 +63,18 @@ end
 function PlayerWalkState:checkEncounters()
 	if self.tileMap.tiles[self.player.mapY][self.player.mapX].id == TILE_IDS['tall-grass'] then
 		if math.random(5) == 1 then
-			gStateStack:push(BattleState())
-			gStateStack:push(BattleMenuState())
+			gStateStack:push(FadeState(
+			{ r = 1, g = 1, b = 1, a = 0},
+			{ r = 1, g = 1, b = 1, a = 1},
+			0.5, 
+			function()
+				gStateStack:push(BattleState())
+				gStateStack:push(FadeState(
+					{ r = 1, g = 1, b = 1, a = 1},
+					{ r = 1, g = 1, b = 1, a = 0},
+					0.5, 
+					function() end))
+			end))
 		end
 	end
 end

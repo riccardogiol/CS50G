@@ -1,16 +1,19 @@
 BattleMenuState = Class{__includes = BaseState}
 
-function BattleMenuState:init(def)
+function BattleMenuState:init(battleState)
+    self.battleState = battleState
 	self.menu = Menu({
-    	x = VIRTUAL_WIDTH / 2 -30,
-    	y = 150,
+    	x = VIRTUAL_WIDTH - 60,
+    	y = VIRTUAL_HEIGHT - 64,
     	width = 60,
-    	height = 30,
+    	height = 64,
+    	font = gFonts['medium'],
     	items = {
     		{
     			text = 'Fight',
     			callback = function()
     				print(1)
+    				self.battleState.playerPV.currentValue = 70
     			end
     		},
     		{
@@ -21,8 +24,19 @@ function BattleMenuState:init(def)
     		{
     			text = 'Run',
     			callback = function()
-    				gStateStack:pop()
-    				gStateStack:pop()
+    				gStateStack:push(FadeState(
+						{ r = 1, g = 1, b = 1, a = 0},
+						{ r = 1, g = 1, b = 1, a = 1},
+						0.5, 
+						function()
+							gStateStack:pop()
+							gStateStack:pop()
+							gStateStack:push(FadeState(
+								{ r = 1, g = 1, b = 1, a = 1},
+								{ r = 1, g = 1, b = 1, a = 0},
+								0.5, 
+								function() end))
+						end))
     			end
     		}
     	}

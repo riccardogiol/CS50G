@@ -11,6 +11,7 @@ require 'src/Animation'
 require 'src/gui/Panel'
 require 'src/gui/Textbox'
 require 'src/gui/Selection'
+require 'src/gui/ProgressBar'
 require 'src/gui/Menu'
 
 require 'src/world/Level'

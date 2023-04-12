@@ -5,7 +5,8 @@ function Menu:init(def)
 	self.selection = Selection({
 		x = def.x + 3,
 		y = def.y + 3,
-		items = def.items})
+		items = def.items,
+		font = def.font})
 end
 
 function Menu:update(dt)
