@@ -32,13 +32,33 @@ end
 function FightState:playerAttack(onCallback)
 	gStateStack:push(BattleDialogueState(
 		"Your " .. self.battleState.playedPokemon.name .. " attacks!",
-		function() self:playerDamageOpponent(onCallback) end))
+		function() 
+			Timer.every(0.1, function()
+				self.battleState.playerSprite.blinking = not self.battleState.playerSprite.blinking
+			end):limit(6):finish(function()
+					Timer.every(0.1, function()
+						self.battleState.opponentSprite.opacity = self.battleState.opponentSprite.opacity == 1 and 0 or 1
+					end):limit(6):finish(function()
+						self:playerDamageOpponent(onCallback)
+					end)
+			end)
+		end))
 end
 
 function FightState:opponentAttack(onCallback)
 	gStateStack:push(BattleDialogueState(
 		"The opponent " .. self.battleState.opponentPokemon.name .. " attacks!",
-		function() self:opponentDamagePlayer(onCallback) end))
+		function() 
+			Timer.every(0.1, function()
+				self.battleState.opponentSprite.blinking = not self.battleState.opponentSprite.blinking
+			end)
+			:limit(6):finish(function()
+				Timer.every(0.1, function()
+						self.battleState.playerSprite.opacity = self.battleState.playerSprite.opacity == 1 and 0 or 1
+					end)
+				:limit(6):finish(function() self:opponentDamagePlayer(onCallback) end)
+			end)
+		end))
 end
 
 function FightState:playerDamageOpponent(onCallback)
