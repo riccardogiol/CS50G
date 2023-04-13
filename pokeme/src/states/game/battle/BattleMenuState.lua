@@ -12,6 +12,7 @@ function BattleMenuState:init(battleState)
     		{
     			text = 'Fight',
     			callback = function()
+    				gStateStack:pop()
     				gStateStack:push(FightState(self.battleState))
     			end
     		},

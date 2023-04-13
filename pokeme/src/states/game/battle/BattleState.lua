@@ -74,6 +74,7 @@ end
 
 function BattleState:updatePVs()
 	self.playerPV.currentValue = self.playedPokemon.currentHP
+	self.playerXP.currentValue = self.playedPokemon.currentExp
 	self.opponentPV.currentValue = self.opponentPokemon.currentHP
 end
 
