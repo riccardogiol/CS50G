@@ -55,3 +55,7 @@ function StartState:render()
 
     self.sprite:render()
 end
+
+function StartState:printName()
+	print('StartState')
+end

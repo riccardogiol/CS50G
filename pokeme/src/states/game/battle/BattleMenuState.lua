@@ -12,8 +12,7 @@ function BattleMenuState:init(battleState)
     		{
     			text = 'Fight',
     			callback = function()
-    				print(1)
-    				self.battleState.playerPV.currentValue = self.battleState.playerPV.currentValue - 10
+    				gStateStack:push(FightState(self.battleState))
     			end
     		},
     		{
@@ -49,4 +48,8 @@ end
 
 function BattleMenuState:render()
 	self.menu:render()
+end
+
+function BattleMenuState:printName()
+	print('BattleMenuState')
 end

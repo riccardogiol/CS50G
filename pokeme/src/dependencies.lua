@@ -35,6 +35,7 @@ require 'src/states/game/open_world/DialogueState'
 require 'src/states/game/battle/BattleDialogueState'
 require 'src/states/game/battle/BattleMenuState'
 require 'src/states/game/battle/BattleState'
+require 'src/states/game/battle/FightState'
 require 'src/states/entity/PlayerIdleState'
 require 'src/states/entity/PlayerWalkState'
 

@@ -18,6 +18,9 @@ function love.keypressed(key)
 	if key == 'escape' then
 		love.event.quit()
 	end
+	if key == 'p' then
+		gStateStack:printStatesNames()
+	end
 	love.keyboard.keypressed[key] = true
 end
 

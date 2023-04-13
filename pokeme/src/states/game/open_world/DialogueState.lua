@@ -20,3 +20,7 @@ function DialogueState:render()
 	self.panel:render()
 	self.textbox:render()
 end
+
+function DialogueState:printName()
+	print('DialogueState')
+end

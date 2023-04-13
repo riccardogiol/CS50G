@@ -33,3 +33,9 @@ function StateStack:clear()
 	self.states = {}
 	self:push(BaseState())
 end
+
+function StateStack:printStatesNames()
+	for i = #self.states, 1, -1 do
+		self.states[i]:printName()
+	end
+end

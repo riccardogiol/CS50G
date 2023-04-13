@@ -24,3 +24,7 @@ function FadeState:render()
 	love.graphics.rectangle('fill', 0, 0, VIRTUAL_WIDTH, VIRTUAL_HEIGHT)
 	love.graphics.setColor(1, 1, 1, 1)
 end
+
+function FadeState:printName()
+	print('FadeState')
+end

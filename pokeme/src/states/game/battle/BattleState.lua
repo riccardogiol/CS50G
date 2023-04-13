@@ -14,7 +14,7 @@ function BattleState:init(player)
 		width = 150, 
 		height = 4, 
 		maxValue = self.playedPokemon.HP, 
-		currentValue = self.playedPokemon.CurrentHP, 
+		currentValue = self.playedPokemon.currentHP, 
 		color = {1, 0, 0, 1}
 	})
 	self.playerXP = ProgressBar {
@@ -33,7 +33,7 @@ function BattleState:init(player)
 		width = 150, 
 		height = 4, 
 		maxValue = self.opponentPokemon.HP, 
-		currentValue = self.opponentPokemon.CurrentHP, 
+		currentValue = self.opponentPokemon.currentHP, 
 		color = {1, 0, 0, 1}
 	})
 
@@ -72,6 +72,11 @@ function BattleState:startBattle()
 	end)
 end
 
+function BattleState:updatePVs()
+	self.playerPV.currentValue = self.playedPokemon.currentHP
+	self.opponentPV.currentValue = self.opponentPokemon.currentHP
+end
+
 function BattleState:render()
     love.graphics.clear(214/255, 214/255, 214/255, 1)
 
@@ -82,6 +87,7 @@ function BattleState:render()
     self.playerSprite:render()
     self.opponentSprite:render()
     if self.renderPokeSpecs then
+    	self:updatePVs()
 		self.playerPV:render()
 		self.opponentPV:render()
 		self.playerXP:render()
@@ -94,4 +100,8 @@ function BattleState:render()
             self.opponentPV.x, self.opponentPV.y + 8)
 	end
 	self.bottomPanel:render()
+end
+
+function BattleState:printName()
+	print('BattleState')
 end

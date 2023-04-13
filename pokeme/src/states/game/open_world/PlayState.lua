@@ -13,3 +13,7 @@ end
 function PlayState:render()
 	self.level:render()
 end
+
+function PlayState:printName()
+	print('PlayState')
+end
