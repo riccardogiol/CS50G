@@ -344,9 +344,12 @@
 -r:"Library/Bee/artifacts/200b0aE.dag/Unity.VSCode.Editor.ref.dll"
 -r:"Library/Bee/artifacts/200b0aE.dag/UnityEditor.UI.ref.dll"
 -r:"Library/Bee/artifacts/200b0aE.dag/UnityEngine.UI.ref.dll"
+"Assets/Scripts/CoinCollector.cs"
 "Assets/Scripts/HelicopterController.cs"
 "Assets/Scripts/RotatingObject.cs"
+"Assets/Scripts/ScoreObject.cs"
 "Assets/Scripts/ShiftingTexture.cs"
+"Assets/Scripts/UIScoreCounter.cs"
 -langversion:9.0
 
 /deterministic
