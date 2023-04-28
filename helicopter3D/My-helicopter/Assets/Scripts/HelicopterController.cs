@@ -6,6 +6,7 @@ using UnityEngine;
 public class HelicopterController : MonoBehaviour
 {
     public float speed = 10.0f;
+    public ParticleSystem explosionParticles;
     private float horizontal, vertical;
     private Rigidbody rb;
 
@@ -37,5 +38,12 @@ public class HelicopterController : MonoBehaviour
         }
 
         rb.velocity = new Vector3(horizontal, vertical, 0);
+    }
+
+    public void CollisionWithObstacle()
+    {
+        explosionParticles.transform.position = transform.position;
+        explosionParticles.Play();
+        Destroy(gameObject);
     }
 }

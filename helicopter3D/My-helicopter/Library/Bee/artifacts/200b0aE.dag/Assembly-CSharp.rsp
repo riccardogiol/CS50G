@@ -345,10 +345,15 @@
 -r:"Library/Bee/artifacts/200b0aE.dag/UnityEditor.UI.ref.dll"
 -r:"Library/Bee/artifacts/200b0aE.dag/UnityEngine.UI.ref.dll"
 "Assets/Scripts/CoinCollector.cs"
+"Assets/Scripts/CoinSpawner.cs"
 "Assets/Scripts/HelicopterController.cs"
+"Assets/Scripts/ObstacleObject.cs"
+"Assets/Scripts/ObstacleSpawner.cs"
 "Assets/Scripts/RotatingObject.cs"
 "Assets/Scripts/ScoreObject.cs"
+"Assets/Scripts/ShiftingObject.cs"
 "Assets/Scripts/ShiftingTexture.cs"
+"Assets/Scripts/UIGameover.cs"
 "Assets/Scripts/UIScoreCounter.cs"
 -langversion:9.0
 
