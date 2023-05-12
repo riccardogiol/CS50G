@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class GenerateLabyrinth : MonoBehaviour
 {
+    public GameObject player;
+    public GameObject coin;
+
     public GameObject floorBlock;
     public GameObject floorParent;
     public GameObject wallBlock;
@@ -21,6 +24,7 @@ public class GenerateLabyrinth : MonoBehaviour
     {
         startingPositionX = Random.Range(1, mapSize - 2);
         startingPositionZ = Random.Range(1, mapSize - 2);
+        player.transform.SetPositionAndRotation(new Vector3(startingPositionX, 2, startingPositionZ), Quaternion.identity);
         map = GenerateMap();
         for (int z=0; z<mapSize; z++)
         {
@@ -29,7 +33,7 @@ public class GenerateLabyrinth : MonoBehaviour
                 CreateChildPrefab(floorBlock, floorParent, x, 0, z);
                 if (map[z, x])
                 {
-                    CreateChildPrefab(wallBlock, wallParent, x, 1, z);
+                    CreateChildPrefab(wallBlock, wallParent, x, 3, z);
                 }
                 if (ceilingON)
                 {
@@ -57,7 +61,7 @@ public class GenerateLabyrinth : MonoBehaviour
         int finalX = startingPositionX;
         int finalZ = startingPositionZ;
         int distance;
-        map[diggingPositionX, diggingPositionZ] = false;
+        map[diggingPositionZ, diggingPositionX] = false;
         bool moovingOnX = true;
         bool moovingOnward;
         while(wallsRemoved < 300)
@@ -124,7 +128,7 @@ public class GenerateLabyrinth : MonoBehaviour
                 }
             }
         }
-        //insert coin in final position
+        coin.transform.SetPositionAndRotation(new Vector3(finalX, 2, finalZ), Quaternion.identity);
         return map;
     }
 
