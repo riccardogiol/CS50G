@@ -24,7 +24,9 @@ public class GenerateLabyrinth : MonoBehaviour
     {
         startingPositionX = Random.Range(1, mapSize - 2);
         startingPositionZ = Random.Range(1, mapSize - 2);
+        player.GetComponent<CharacterController>().enabled = false;
         player.transform.SetPositionAndRotation(new Vector3(startingPositionX, 2, startingPositionZ), Quaternion.identity);
+        player.GetComponent<CharacterController>().enabled = true;
         map = GenerateMap();
         for (int z=0; z<mapSize; z++)
         {
@@ -128,7 +130,7 @@ public class GenerateLabyrinth : MonoBehaviour
                 }
             }
         }
-        coin.transform.SetPositionAndRotation(new Vector3(finalX, 2, finalZ), Quaternion.identity);
+        Instantiate(coin, new Vector3(finalX, 2, finalZ), Quaternion.identity);
         return map;
     }
 
