@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class ReloadSceneOnInput : MonoBehaviour
+public class GameoverBlock : MonoBehaviour
 {
-    public string SceneName;
     // Start is called before the first frame update
     void Start()
     {
@@ -15,10 +14,14 @@ public class ReloadSceneOnInput : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetAxis("Submit") == 1)
-        {
-            SceneManager.LoadScene(SceneName);
-        }
         
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "Player")
+        {   
+            SceneManager.LoadScene("GameOver");
+        }
     }
 }

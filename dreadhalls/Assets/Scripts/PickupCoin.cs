@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class PickupCoin : MonoBehaviour
 {
+    public GameObject scoreCounter;
     private AudioSource pickupSound;
     // Start is called before the first frame update
     void Start()
@@ -23,6 +24,7 @@ public class PickupCoin : MonoBehaviour
         if (other.gameObject.tag == "Player")
         {   
             pickupSound.Play();
+            scoreCounter.GetComponent<ScoreCounter>().scores();
             SceneManager.LoadScene("Play");
         }
     }

@@ -7,6 +7,7 @@ public class GenerateLabyrinth : MonoBehaviour
     public GameObject player;
     public GameObject coin;
 
+    public GameObject gameoverBlock;
     public GameObject floorBlock;
     public GameObject floorParent;
     public GameObject wallBlock;
@@ -26,16 +27,26 @@ public class GenerateLabyrinth : MonoBehaviour
         startingPositionZ = Random.Range(1, mapSize - 2);
         player.GetComponent<CharacterController>().enabled = false;
         player.transform.SetPositionAndRotation(new Vector3(startingPositionX, 2, startingPositionZ), Quaternion.identity);
+        CreateChildPrefab(floorBlock, floorParent, startingPositionX, 0, startingPositionZ);
         player.GetComponent<CharacterController>().enabled = true;
         map = GenerateMap();
         for (int z=0; z<mapSize; z++)
         {
             for (int x=0; x<mapSize; x++)
             {
-                CreateChildPrefab(floorBlock, floorParent, x, 0, z);
                 if (map[z, x])
                 {
                     CreateChildPrefab(wallBlock, wallParent, x, 3, z);
+                    CreateChildPrefab(floorBlock, floorParent, x, 0, z);
+                } else
+                {
+                    if (Random.value > 0.05)
+                    {
+                        CreateChildPrefab(floorBlock, floorParent, x, 0, z);
+                    } else
+                    {
+                        Instantiate(gameoverBlock, new Vector3(x, -3, z), Quaternion.identity);
+                    }
                 }
                 if (ceilingON)
                 {
