@@ -130,7 +130,7 @@ public class GenerateLabyrinth : MonoBehaviour
                 }
             }
         }
-        Instantiate(coin, new Vector3(finalX, 2, finalZ), Quaternion.identity);
+        Instantiate(coin, new Vector3(finalX, 1.3f, finalZ), Quaternion.identity);
         return map;
     }
 

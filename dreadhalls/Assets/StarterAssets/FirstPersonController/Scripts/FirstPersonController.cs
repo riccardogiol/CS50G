@@ -33,6 +33,10 @@ namespace StarterAssets
 		[Tooltip("Time required to pass before entering the fall state. Useful for walking down stairs")]
 		public float FallTimeout = 0.15f;
 
+		[Space(10)]
+		[Tooltip("Footstep sounds to play randomly while player is walking")]
+		public AudioClip[] FootstepSounds;
+
 		[Header("Player Grounded")]
 		[Tooltip("If the character is grounded or not. Not part of the CharacterController built in grounded check")]
 		public bool Grounded = true;
@@ -51,6 +55,7 @@ namespace StarterAssets
 		[Tooltip("How far in degrees can you move the camera down")]
 		public float BottomClamp = -90.0f;
 
+
 		// cinemachine
 		private float _cinemachineTargetPitch;
 
@@ -63,6 +68,11 @@ namespace StarterAssets
 		// timeout deltatime
 		private float _jumpTimeoutDelta;
 		private float _fallTimeoutDelta;
+
+		// footstep sound
+		private float _lastStepTimestamp = 0.0f;
+		private float _stepInterval = 0.7f;
+		private AudioSource _footstepAudio;
 
 	
 #if ENABLE_INPUT_SYSTEM
@@ -108,6 +118,8 @@ namespace StarterAssets
 			// reset our timeouts on start
 			_jumpTimeoutDelta = JumpTimeout;
 			_fallTimeoutDelta = FallTimeout;
+
+			_footstepAudio = GetComponent<AudioSource>();
 		}
 
 		private void Update()
@@ -196,7 +208,34 @@ namespace StarterAssets
 
 			// move the player
 			_controller.Move(inputDirection.normalized * (_speed * Time.deltaTime) + new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
+			
+			//ADD CODE TO FOOTSTEP SOUNDS
+			if (_speed > 0.0f && Grounded)
+			{
+				ProgressStepCycle();
+			}
 		}
+
+		private void ProgressStepCycle()
+		{
+			if (_lastStepTimestamp + _stepInterval < Time.time)
+			{
+				_lastStepTimestamp = Time.time;
+				PlayFootStepAudio();
+			}
+		}
+
+		private void PlayFootStepAudio()
+        {
+            // pick & play a random footstep sound from the array,
+            // excluding sound at index 0
+            int n = Random.Range(1, FootstepSounds.Length);
+            _footstepAudio.clip = FootstepSounds[n];
+            _footstepAudio.Play();
+            // move picked sound to index 0 so it's not picked next time
+            FootstepSounds[n] = FootstepSounds[0];
+            FootstepSounds[0] = _footstepAudio.clip;
+        }
 
 		private void JumpAndGravity()
 		{
