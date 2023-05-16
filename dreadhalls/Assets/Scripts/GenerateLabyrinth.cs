@@ -7,13 +7,14 @@ public class GenerateLabyrinth : MonoBehaviour
     public GameObject player;
     public GameObject coin;
 
-    public GameObject gameoverBlock;
     public GameObject floorBlock;
     public GameObject floorParent;
     public GameObject wallBlock;
     public GameObject wallParent;
     public GameObject ceilingBlock;
     public GameObject ceilingParent;
+    public GameObject gameoverBlock;
+    public GameObject gameoverBlockParent;
     public bool ceilingON;
 
     private bool[,] map;
@@ -45,7 +46,7 @@ public class GenerateLabyrinth : MonoBehaviour
                         CreateChildPrefab(floorBlock, floorParent, x, 0, z);
                     } else
                     {
-                        Instantiate(gameoverBlock, new Vector3(x, -3, z), Quaternion.identity);
+                        CreateChildPrefab(gameoverBlock, gameoverBlockParent, x, -3, z);
                     }
                 }
                 if (ceilingON)
