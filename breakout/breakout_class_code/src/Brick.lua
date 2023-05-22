@@ -47,6 +47,12 @@ paletteColors = {
         ['r'] = 251,
         ['g'] = 242,
         ['b'] = 54
+    },
+    -- white
+    [6] = {
+        ['r'] = 255,
+        ['g'] = 255,
+        ['b'] = 255
     }
 }
 
@@ -78,13 +84,30 @@ function Brick:init(x, y)
 
     -- spread of particles; normal looks more natural than uniform
     self.psystem:setEmissionArea('normal', 10, 10)
+
+    self.locked = false
 end
 
 --[[
     Triggers a hit on the brick, taking it out of play if at 0 health or
     changing its color otherwise.
 ]]
-function Brick:hit()
+function Brick:hit(player)
+
+    local score = self.tier * 200 + self.color * 25
+    if self.locked then
+        if not player.hasKey then
+            gSounds['locked-brick']:play()
+            return 0
+        else
+            gSounds['duplicate-ball']:play()
+            self.locked = false
+            player.hasKey = false
+            score = 2000
+        end
+    end
+
+
     -- set the particle system to interpolate between two colors; in this case, we give
     -- it our self.color but with varying alpha; brighter for higher tiers, fading to 0
     -- over the particle's lifetime (the second color)
@@ -127,6 +150,7 @@ function Brick:hit()
         gSounds['brick-hit-1']:stop()
         gSounds['brick-hit-1']:play()
     end
+    return score
 end
 
 function Brick:update(dt)
@@ -135,11 +159,15 @@ end
 
 function Brick:render()
     if self.inPlay then
-        love.graphics.draw(gTextures['main'], 
-            -- multiply color by 4 (-1) to get our color offset, then add tier to that
-            -- to draw the correct tier and color brick onto the screen
-            gFrames['bricks'][1 + ((self.color - 1) * 4) + self.tier],
-            self.x, self.y)
+        if self.locked then
+            love.graphics.draw(gTextures['main'], gFrames['lockedbrick'], self.x, self.y)
+        else
+            love.graphics.draw(gTextures['main'], 
+                -- multiply color by 4 (-1) to get our color offset, then add tier to that
+                -- to draw the correct tier and color brick onto the screen
+                gFrames['bricks'][1 + ((self.color - 1) * 4) + self.tier],
+                self.x, self.y)
+        end
     end
 end
 

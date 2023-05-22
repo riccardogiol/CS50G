@@ -19,6 +19,13 @@ Paddle = Class{}
     Our Paddle will initialize at the same spot every time, in the middle
     of the world horizontally, toward the bottom.
 ]]
+
+PADDLE_SIZES = {
+    [1] = 32,
+    [2] = 64,
+    [3] = 96,
+    [4] = 128
+}
 function Paddle:init(skin)
     -- x is placed in the middle
     self.x = VIRTUAL_WIDTH / 2 - 32
@@ -40,6 +47,8 @@ function Paddle:init(skin)
     -- the variant is which of the four paddle sizes we currently are; 2
     -- is the starting size, as the smallest is too tough to start with
     self.size = 2
+
+    self.hasKey = false
 end
 
 function Paddle:update(dt)
@@ -65,6 +74,18 @@ function Paddle:update(dt)
     else
         self.x = math.min(VIRTUAL_WIDTH - self.width, self.x + self.dx * dt)
     end
+end
+
+function Paddle:reduceSize()
+    self.size = math.max(self.size - 1, 1)
+    self.width = PADDLE_SIZES[self.size]
+    gSounds['reduce-size']:play()
+end
+
+function Paddle:increaseSize()
+    self.size = math.min(self.size + 1, 4)
+    self.width = PADDLE_SIZES[self.size]
+    gSounds['increase-size']:play()
 end
 
 --[[

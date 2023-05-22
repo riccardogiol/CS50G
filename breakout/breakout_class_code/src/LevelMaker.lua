@@ -123,6 +123,19 @@ function LevelMaker.createMap(level)
     if #bricks == 0 then
         return self.createMap(level)
     else
+        local numLockedBricks = math.random(0, level)
+        for i = 0, numLockedBricks,1 do
+            AddRandomLockedBrick(bricks)
+        end
         return bricks
     end
+end
+
+function AddRandomLockedBrick(bricks)
+    local randomBrickPos = math.random(1, #bricks)
+    local pickedBrick = bricks[randomBrickPos]
+    lockedBrick = Brick(pickedBrick.x, pickedBrick.y)
+    lockedBrick.color = 6
+    lockedBrick.locked = true
+    bricks[randomBrickPos] = lockedBrick
 end

@@ -26,19 +26,24 @@ function PlayState:enter(params)
     self.health = params.health
     self.score = params.score
     self.highScores = params.highScores
+    
     self.balls = {}
     table.insert(self.balls, 1, params.ball)
+    -- give ball random starting velocity
+    self.balls[1].dx = math.random(-200, 200)
+    self.balls[1].dy = math.random(-50, -60)
 
     self.powerUps = {}
     self.powerUpInterval = 5
     self.powerUpTimer = 0
     self.level = params.level
 
+    self.hasLockedBlock = self:checkLockedBlock()
+
     self.recoverPoints = params.recoverPoints
 
-    -- give ball random starting velocity
-    self.balls[1].dx = math.random(-200, 200)
-    self.balls[1].dy = math.random(-50, -60)
+    self.pointGained = 0
+
 end
 
 function PlayState:update(dt)
@@ -59,6 +64,13 @@ function PlayState:update(dt)
     if self.powerUpTimer > self.powerUpInterval then
         self.powerUpTimer = self.powerUpTimer - self.powerUpInterval
         self.powerUpInterval = math.random(7, 30)
+        self.hasLockedBlock = self:checkLockedBlock()
+        if self.hasLockedBlock and not self.paddle.hasKey then
+            key = PowerUp(10)
+            key.x = math.random(20, VIRTUAL_WIDTH - 20)
+            key.dy = 80
+            table.insert(self.powerUps, key)
+        end
         powerUp = PowerUp(2)
         powerUp.x = math.random(20, VIRTUAL_WIDTH - 20)
         table.insert(self.powerUps, powerUp)
@@ -70,7 +82,12 @@ function PlayState:update(dt)
     for i, pu in pairs(self.powerUps) do
         pu:update(dt)
         if pu:collides(self.paddle) then
-            self:generate2Balls(pu)
+            if pu.skin == 10 then
+                self.paddle.hasKey = true
+            else
+                self:generate2Balls(pu)            
+                gSounds['duplicate-ball']:play()
+            end
         end
     end
 
@@ -111,11 +128,12 @@ function PlayState:update(dt)
             -- only check collision if we're in play
             if brick.inPlay and ball:collides(brick) then
 
-                -- add to score
-                self.score = self.score + (brick.tier * 200 + brick.color * 25)
-
                 -- trigger the brick's hit function, which removes it from play
-                brick:hit()
+                local score = brick:hit(self.paddle)
+                -- add to score
+                self.score = self.score + score
+                self.pointGained = self.pointGained + score
+                
 
                 -- if we have enough points, recover a point of health
                 if self.score > self.recoverPoints then
@@ -127,6 +145,11 @@ function PlayState:update(dt)
 
                     -- play recover sound effect
                     gSounds['recover']:play()
+                end
+
+                if self.pointGained > 3000 then
+                    self.pointGained = self.pointGained - 3000
+                    self.paddle:increaseSize()
                 end
 
                 -- go to our victory screen if there are no more bricks left
@@ -212,6 +235,8 @@ function PlayState:update(dt)
     if #self.balls == 0 then
 
         self.health = self.health - 1
+        self.paddle:reduceSize()
+
 
         if self.health == 0 then
             gStateMachine:change('game-over', {
@@ -263,6 +288,10 @@ function PlayState:render()
 
     renderScore(self.score)
     renderHealth(self.health)
+    if self.paddle.hasKey then
+        renderKey()
+    end
+
 
     -- pause text, if paused
     if self.paused then
@@ -297,4 +326,18 @@ function PlayState:checkVictory()
     end
 
     return true
+end
+
+function PlayState:checkLockedBlock()
+    for k, brick in pairs(self.bricks) do
+        if brick.locked then
+            return true
+        end 
+    end
+
+    return false
+end
+
+function renderKey()
+    love.graphics.draw(gTextures['main'], gFrames['powerups'][10], VIRTUAL_WIDTH - 20, 20)
 end
