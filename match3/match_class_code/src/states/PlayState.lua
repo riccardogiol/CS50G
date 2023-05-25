@@ -38,6 +38,7 @@ function PlayState:init()
     self.highlightedTile = nil
 
     self.endMatchesEvaluation = true
+    self.spawnShiny = 3
 
     self.score = 0
     self.timer = 60
@@ -126,6 +127,12 @@ function PlayState:update(dt)
                 score = self.score,
                 timer = self.timer
             })
+        end
+
+        self.spawnShiny = self.spawnShiny - 1
+        if self.spawnShiny <= 0 then
+            self.spawnShiny = math.random(2, 4)
+            self.board.tiles[math.random(1, 8)][math.random(1, 8)]:makeItShine()
         end
     end
 

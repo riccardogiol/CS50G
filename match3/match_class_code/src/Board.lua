@@ -18,7 +18,7 @@ function Board:init(level, x, y)
     self.y = y
     self.level = level
     self.matches = {}
-    self.colors = PickColors(10)
+    self.colors = PickColors(9)
 
     self:initializeTiles()
 end
@@ -96,13 +96,23 @@ function Board:calculateMatches()
                 -- if we have a match of 3 or more up to now, add it to our matches table
                 if matchNum >= 3 then
                     local match = {}
+                    local thereIsShiny = false
 
                     -- go backwards from here by matchNum
                     for x2 = x - 1, x - matchNum, -1 do
-                        
+                        if self.tiles[y][x2].shiny then
+                            thereIsShiny = true
+                        end
                         -- add each tile to the match that's in that match
                         table.insert(match, self.tiles[y][x2])
                     end
+
+                    if thereIsShiny then
+                        match = {}
+                        for x3 = 1, 8 do
+                            table.insert(match, self.tiles[y][x3])
+                        end
+                    end 
 
                     -- add this match to our total matches table
                     table.insert(matches, match)
@@ -145,10 +155,21 @@ function Board:calculateMatches()
 
                 if matchNum >= 3 then
                     local match = {}
+                    local thereIsShiny = false
 
                     for y2 = y - 1, y - matchNum, -1 do
+                        if self.tiles[y2][x].shiny then
+                            thereIsShiny = true
+                        end
                         table.insert(match, self.tiles[y2][x])
-                    end
+                    end  
+
+                    if thereIsShiny then
+                        match = {}
+                        for y3 = 1, 8 do
+                            table.insert(match, self.tiles[y3][x])
+                        end
+                    end 
 
                     table.insert(matches, match)
                 end
