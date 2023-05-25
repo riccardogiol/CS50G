@@ -38,6 +38,7 @@ require 'src/states/BaseState'
 require 'src/states/BeginGameState'
 require 'src/states/GameOverState'
 require 'src/states/PlayState'
+require 'src/states/ReshuffleState'
 require 'src/states/StartState'
 
 gSounds = {

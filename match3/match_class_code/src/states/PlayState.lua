@@ -29,12 +29,15 @@ function PlayState:init()
 
     -- timer used to switch the highlight rect's color
     self.rectHighlighted = false
+    self.mouseInput = false
 
     -- flag to show whether we're able to process input (not swapping or clearing)
     self.canInput = true
 
     -- tile we're currently highlighting (preparing to swap)
     self.highlightedTile = nil
+
+    self.endMatchesEvaluation = true
 
     self.score = 0
     self.timer = 60
@@ -68,6 +71,10 @@ function PlayState:enter(params)
 
     -- score we have to reach to get to the next level
     self.scoreGoal = self.level * 1.25 * 1000
+
+    if params.timer then
+        self.timer = params.timer
+    end
 end
 
 function PlayState:update(dt)
@@ -105,20 +112,41 @@ function PlayState:update(dt)
         })
     end
 
+    if self.endMatchesEvaluation then
+        self.endMatchesEvaluation = false
+        local thereArePotentialMatches = self.board:evaluatePotentialBoardMatches()
+        if not thereArePotentialMatches then
+            Timer.clear()
+
+            gSounds['next-level']:play()
+
+            gStateMachine:change('reshuffle', {
+                level = self.level,
+                board = self.board,
+                score = self.score,
+                timer = self.timer
+            })
+        end
+    end
+
     if self.canInput then
         -- move cursor around based on bounds of grid, playing sounds
         if love.keyboard.wasPressed('up') then
             self.boardHighlightY = math.max(0, self.boardHighlightY - 1)
             gSounds['select']:play()
+            self.mouseInput = false
         elseif love.keyboard.wasPressed('down') then
             self.boardHighlightY = math.min(7, self.boardHighlightY + 1)
             gSounds['select']:play()
+            self.mouseInput = false
         elseif love.keyboard.wasPressed('left') then
             self.boardHighlightX = math.max(0, self.boardHighlightX - 1)
             gSounds['select']:play()
+            self.mouseInput = false
         elseif love.keyboard.wasPressed('right') then
             self.boardHighlightX = math.min(7, self.boardHighlightX + 1)
             gSounds['select']:play()
+            self.mouseInput = false
         end
 
         -- if we've pressed enter, to select or deselect a tile...
@@ -126,6 +154,7 @@ function PlayState:update(dt)
 
             if love.mouse.wasPressed(1) then
                 self.boardHighlightX, self.boardHighlightY = self.board:getGridFromPosition(love.mouse.lastX, love.mouse.lastY)
+                self.mouseInput = true
             end
             
             -- if same tile as currently highlighted, deselect
@@ -147,33 +176,41 @@ function PlayState:update(dt)
                 self.highlightedTile = nil
             else
                 
-                -- swap grid positions of tiles
-                local tempX = self.highlightedTile.gridX
-                local tempY = self.highlightedTile.gridY
 
-                local newTile = self.board.tiles[y][x]
+                local produceMatch = self.board:evaluateSwappingTilesMatches(self.highlightedTile, x, y)
 
-                self.highlightedTile.gridX = newTile.gridX
-                self.highlightedTile.gridY = newTile.gridY
-                newTile.gridX = tempX
-                newTile.gridY = tempY
+                if produceMatch then
+                    -- swap grid positions of tiles
+                    local tempX = self.highlightedTile.gridX
+                    local tempY = self.highlightedTile.gridY
 
-                -- swap tiles in the tiles table
-                self.board.tiles[self.highlightedTile.gridY][self.highlightedTile.gridX] =
-                    self.highlightedTile
+                    local newTile = self.board.tiles[y][x]
 
-                self.board.tiles[newTile.gridY][newTile.gridX] = newTile
+                    self.highlightedTile.gridX = newTile.gridX
+                    self.highlightedTile.gridY = newTile.gridY
+                    newTile.gridX = tempX
+                    newTile.gridY = tempY
 
-                -- tween coordinates between the two so they swap
-                Timer.tween(0.1, {
-                    [self.highlightedTile] = {x = newTile.x, y = newTile.y},
-                    [newTile] = {x = self.highlightedTile.x, y = self.highlightedTile.y}
-                })
-                
-                -- once the swap is finished, we can tween falling blocks as needed
-                :finish(function()
-                    self:calculateMatches()
-                end)
+                    -- swap tiles in the tiles table
+                    self.board.tiles[self.highlightedTile.gridY][self.highlightedTile.gridX] =
+                        self.highlightedTile
+
+                    self.board.tiles[newTile.gridY][newTile.gridX] = newTile
+
+                    -- tween coordinates between the two so they swap
+                    Timer.tween(0.1, {
+                        [self.highlightedTile] = {x = newTile.x, y = newTile.y},
+                        [newTile] = {x = self.highlightedTile.x, y = self.highlightedTile.y}
+                    })
+                    
+                    -- once the swap is finished, we can tween falling blocks as needed
+                    :finish(function()
+                        self:calculateMatches()
+                    end)
+                else
+                    gSounds['error']:play()
+                    self.highlightedTile = nil
+                end
             end
         end
     end
@@ -224,6 +261,7 @@ function PlayState:calculateMatches()
     -- if no matches, we can continue playing
     else
         self.canInput = true
+        self.endMatchesEvaluation = true
     end
 end
 
@@ -252,10 +290,12 @@ function PlayState:render()
         love.graphics.setColor(172/255, 50/255, 50/255, 1)
     end
 
-    -- draw actual cursor rect
-    love.graphics.setLineWidth(4)
-    love.graphics.rectangle('line', self.boardHighlightX * 32 + (VIRTUAL_WIDTH - 272),
-        self.boardHighlightY * 32 + 16, 32, 32, 4)
+    if not self.mouseInput then
+        -- draw actual cursor rect
+        love.graphics.setLineWidth(4)
+        love.graphics.rectangle('line', self.boardHighlightX * 32 + (VIRTUAL_WIDTH - 272),
+            self.boardHighlightY * 32 + 16, 32, 32, 4)
+    end
 
     -- GUI text
     love.graphics.setColor(56/255, 56/255, 56/255, 234/255)
