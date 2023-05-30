@@ -11,24 +11,26 @@ function PlayState:init()
     self.camX = 0
     self.camY = 0
 
-    local playerStartingX = nil
-    while playerStartingX == nil do
-        self.level = LevelMaker.generate(100, 10)
-        playerStartingX = self.level:giveFirstColumnWithSolidGround()
-    end
-    playerStartingX = (playerStartingX - 1) * TILE_SIZE
-
-    self.tileMap = self.level.tileMap
     self.background = math.random(3)
     self.backgroundX = 0
 
     self.gravityOn = true
     self.gravityAmount = 360
+end
+
+function PlayState:enter(params)
+    local playerStartingX = nil
+    while playerStartingX == nil do
+        self.level = LevelMaker.generate(params.levelDifficulty)
+        playerStartingX = self.level:giveFirstColumnWithSolidGround()
+    end
+    playerStartingX = (playerStartingX - 1) * TILE_SIZE
+    self.tileMap = self.level.tileMap
 
     self.player = Player({
         x = playerStartingX, y = 0,
         width = 16, height = 20,
-        texture = 'green-alien',
+        texture = params.player.texture,
         stateMachine = StateMachine {
             ['idle'] = function() return PlayerIdleState(self.player) end,
             ['walking'] = function() return PlayerWalkingState(self.player) end,
@@ -36,10 +38,11 @@ function PlayState:init()
             ['falling'] = function() return PlayerFallingState(self.player, self.gravityAmount) end
         },
         map = self.tileMap,
-        level = self.level
+        level = self.level,
+        score = params.player.score
     })
 
-    local addingLockKeys = self.level:addLockAndKey(self.player)
+    local addingLockKeys = self.level:addLockAndKey(self.player, params.levelDifficulty)
     if addingLockKeys == error then
         return addingLockKeys
     end

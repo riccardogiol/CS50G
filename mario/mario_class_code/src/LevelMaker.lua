@@ -10,7 +10,9 @@
 
 LevelMaker = Class{}
 
-function LevelMaker.generate(width, height)
+function LevelMaker.generate(levelDifficulty)
+    local width = 100 + levelDifficulty*20
+    local height = 10
     local tiles = {}
     local entities = {}
     local objects = {}

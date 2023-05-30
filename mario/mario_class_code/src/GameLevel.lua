@@ -52,7 +52,7 @@ function GameLevel:giveFirstColumnWithSolidGround()
     return nil
 end
 
-function GameLevel:addLockAndKey(player)
+function GameLevel:addLockAndKey(player, levelDifficulty)
     local objInColumn = true
     local randomColumn1 = nil
     local randomColumn2 = nil
@@ -63,7 +63,6 @@ function GameLevel:addLockAndKey(player)
         end
         objInColumn = self:checkIfObjectInColumn(randomColumn1)
         if objInColumn then
-            print("Try to add object in column " .. randomColumn1 .. " where object already present")
         end
     end
     objInColumn = true
@@ -75,11 +74,8 @@ function GameLevel:addLockAndKey(player)
         objInColumn = self:checkIfObjectInColumn(randomColumn2)
         objInColumn = objInColumn and (randomColumn2 == randomColumn1)
         if objInColumn then
-            print("Try to add object in column " .. randomColumn1 .. " where object already present")
         end
     end
-    print(randomColumn1)
-    print(randomColumn2)
     local keyColor = math.random(4)
     local lockBlock = GameObject {
         texture = 'keys-locks',
@@ -102,6 +98,7 @@ function GameLevel:addLockAndKey(player)
                     gSounds['powerup-reveal']:play()
                     obj.hit = true
                     obj.player.key = nil
+                    self:spawnGoalPost(player, levelDifficulty)
                 end
             end
             gSounds['empty-block']:play()
@@ -160,6 +157,60 @@ function GameLevel:addLockAndKey(player)
     }
     table.insert(self.objects, keyBlock)
 
+end
+
+function GameLevel:spawnGoalPost(player, levelDifficulty)
+    local lastColumn = self:giveLastColumnWithSolidGround()
+    local goalPole = GameObject {
+        texture = 'goal-posts',
+        x = (lastColumn - 1) * TILE_SIZE,
+        y = 6 * TILE_SIZE - 48,
+        width = 16,
+        height = 48,
+        player = player,
+
+        frame = math.random(6),
+        collidable = true,
+        consumable = true,
+        solid = false,
+
+        -- collision function takes itself
+        onConsume = function(player, object)
+            gSounds['pickup']:play()
+            gStateMachine:change('play', {
+                player = player,
+                levelDifficulty = levelDifficulty + 1
+            })
+        end
+    }
+    table.insert(self.objects, goalPole)
+    local flagColor = math.random(0, 3)
+    local goalFlag = Flag {
+        texture = 'goal-posts',
+        x = (lastColumn - 1) * TILE_SIZE + 8,
+        y = 6 * TILE_SIZE - 48,
+        width = 16,
+        height = 16,
+        player = player,
+
+        frames = {7+(flagColor*3), 8+(flagColor*3)},
+        collidable = true,
+        consumable = true,
+        solid = false,
+
+        -- collision function takes itself
+        onConsume = function(player, object) end
+    }
+    table.insert(self.objects, goalFlag)
+end
+
+function GameLevel:giveLastColumnWithSolidGround()
+    for x = self.tileMap.width, 1, -1 do
+        if self.tileMap.tiles[7][x].topper then
+            return x
+        end
+    end
+    return nil
 end
 
 function GameLevel:update(dt)

@@ -34,6 +34,21 @@ function GenerateQuads(atlas, tilewidth, tileheight)
     return spritesheet
 end
 
+function GenerateGoalPostQuads(atlas)
+    local quads = {}
+    local quadsCounter = 1
+    for i = 1, 6 do
+        quads[quadsCounter] = love.graphics.newQuad((i-1)*16, 0, 16, 48, atlas:getDimensions())
+        quadsCounter = quadsCounter + 1
+    end
+    for y = 1, 4 do
+        for x = 1, 3 do
+            quads[quadsCounter] = love.graphics.newQuad(96 + (x-1)*16, (y-1)*16, 16, 16, atlas:getDimensions())
+            quadsCounter = quadsCounter + 1
+        end
+    end
+    return quads
+end
 --[[
     Divides quads we've generated via slicing our tile sheet into separate tile sets.
 ]]

@@ -46,6 +46,7 @@ require 'src/states/entity/snail/SnailMovingState'
 require 'src/Animation'
 require 'src/Entity'
 require 'src/GameObject'
+require 'src/Flag'
 require 'src/GameLevel'
 require 'src/LevelMaker'
 require 'src/Player'
@@ -72,6 +73,7 @@ gTextures = {
     ['jump-blocks'] = love.graphics.newImage('graphics/jump_blocks.png'),
     ['gems'] = love.graphics.newImage('graphics/gems.png'),
     ['keys-locks'] = love.graphics.newImage('graphics/keys_and_locks.png'),
+    ['goal-posts'] = love.graphics.newImage('graphics/flags.png'),
     ['backgrounds'] = love.graphics.newImage('graphics/backgrounds.png'),
     ['green-alien'] = love.graphics.newImage('graphics/green_alien.png'),
     ['creatures'] = love.graphics.newImage('graphics/creatures.png')
@@ -86,6 +88,7 @@ gFrames = {
     ['jump-blocks'] = GenerateQuads(gTextures['jump-blocks'], 16, 16),
     ['gems'] = GenerateQuads(gTextures['gems'], 16, 16),
     ['keys-locks'] = GenerateQuads(gTextures['keys-locks'], 16, 16),
+    ['goal-posts'] = GenerateGoalPostQuads(gTextures['goal-posts'], 16, 16),
     ['backgrounds'] = GenerateQuads(gTextures['backgrounds'], 256, 128),
     ['green-alien'] = GenerateQuads(gTextures['green-alien'], 16, 20),
     ['creatures'] = GenerateQuads(gTextures['creatures'], 16, 16)
