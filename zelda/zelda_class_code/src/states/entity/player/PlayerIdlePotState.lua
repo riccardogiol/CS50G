@@ -1,9 +1,13 @@
 PlayerIdlePotState = Class{__includes = EntityIdleState}
 
-function PlayerIdlePotState:enter(params)
+function PlayerIdlePotState:init(player, dungeon)
+    self.entity = player
+    self.dungeon = dungeon
+
+    self.entity:changeAnimation('idle-pot-' .. self.entity.direction)
+
     self.entity.offsetY = 5
     self.entity.offsetX = 0
-    self.entity:changeAnimation('idle-pot-' .. self.entity.direction)
 end
 
 function PlayerIdlePotState:update(dt)
@@ -13,7 +17,7 @@ function PlayerIdlePotState:update(dt)
     end
 
     if love.keyboard.wasPressed('enter') or love.keyboard.wasPressed('return') then
-        --throw pot projectile
+        self.dungeon.currentRoom:throwPot(self.entity.x - self.entity.offsetX, self.entity.y - self.entity.offsetY, self.entity.direction )
         self.entity:changeState('idle')
     end
 end

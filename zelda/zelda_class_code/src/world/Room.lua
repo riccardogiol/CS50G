@@ -23,6 +23,8 @@ function Room:init(player)
     self.objects = {}
     self:generateObjects()
 
+    self.projectiles = {}
+
     -- doorways that lead to other dungeon rooms
     self.doorways = {}
     table.insert(self.doorways, Doorway('top', false, self))
@@ -76,10 +78,9 @@ function Room:generateEntities()
 
                 heart.onCollide = function()
                     self.player.health = math.min(self.player.health + 2, 6)
-                    gSounds['door']:play()
+                    gSounds['pick-heart']:play()
                 end
                 table.insert(self.objects, heart)
-                print("insertHeart")
             end
         end
 
@@ -173,6 +174,21 @@ function Room:generateWallsAndFloors()
     end
 end
 
+function Room:throwPot(x, y, direction)
+    local projectileVelocity = 100
+    local dx, dy = 0, 0
+    if direction == 'left' then
+        dx = - projectileVelocity
+    elseif direction == 'right' then
+        dx = projectileVelocity
+    elseif direction == 'up' then
+        dy = - projectileVelocity
+    elseif direction == 'down' then
+        dy = projectileVelocity
+    end
+    table.insert(self.projectiles, Projectile(x, y, dx, dy))
+end
+
 function Room:update(dt)
     
     -- don't update anything if we are sliding to another room (we have offsets)
@@ -214,6 +230,23 @@ function Room:update(dt)
             if object.consumable then
                 table.remove(self.objects, k)
             end
+        end
+    end
+
+    for k = #self.projectiles, 1, -1 do
+        local projectile = self.projectiles[k]
+        projectile:update(dt)
+
+        for i = #self.entities, 1, -1 do
+            local entity = self.entities[i]
+            if not entity.dead and projectile:collides(entity) then
+                entity.health = entity.health - 1
+                projectile:destroy()
+            end
+        end
+
+        if projectile.destroyed then
+            table.remove(self.projectiles, k)
         end
     end
 end
@@ -269,6 +302,10 @@ function Room:render()
     end
 
     love.graphics.setStencilTest()
+
+    for k, projectile in pairs(self.projectiles) do
+        projectile:render(self.adjacentOffsetX, self.adjacentOffsetY)
+    end
 
     --
     -- DEBUG DRAWING OF STENCIL RECTANGLES

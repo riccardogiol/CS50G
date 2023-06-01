@@ -18,8 +18,7 @@ end
 function PlayerLiftPotState:enter(params)
 
     -- restart sword swing sound for rapid swinging
-    gSounds['sword']:stop()
-    gSounds['sword']:play()
+    gSounds['pick-pot']:play()
 
     self.potIndex = params.potIndex
 

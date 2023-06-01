@@ -15,6 +15,7 @@ require 'src/GameObject'
 require 'src/game_objects'
 require 'src/Hitbox'
 require 'src/Player'
+require 'src/Projectile'
 require 'src/StateMachine'
 require 'src/Util'
 
@@ -78,6 +79,9 @@ gSounds = {
     ['music'] = love.audio.newSource('sounds/music.mp3', 'static'),
     ['sword'] = love.audio.newSource('sounds/sword.wav', 'static'),
     ['hit-enemy'] = love.audio.newSource('sounds/hit_enemy.wav', 'static'),
+    ['pick-heart'] = love.audio.newSource('sounds/pick_heart.wav', 'static'),
+    ['pick-pot'] = love.audio.newSource('sounds/pick_pot.wav', 'static'),
+    ['break-pot'] = love.audio.newSource('sounds/pot_break.wav', 'static'),
     ['hit-player'] = love.audio.newSource('sounds/hit_player.wav', 'static'),
     ['door'] = love.audio.newSource('sounds/door.wav', 'static')
 }

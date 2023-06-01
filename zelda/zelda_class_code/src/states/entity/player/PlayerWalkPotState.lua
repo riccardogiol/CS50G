@@ -28,7 +28,7 @@ function PlayerWalkPotState:update(dt)
 
 
     if love.keyboard.wasPressed('enter') or love.keyboard.wasPressed('return') then
-        --throw pot projectile
+        self.dungeon.currentRoom:throwPot(self.entity.x - self.entity.offsetX, self.entity.y - self.entity.offsetY, self.entity.direction )
         self.entity:changeState('idle')
     end
 
