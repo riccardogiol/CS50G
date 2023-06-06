@@ -30,7 +30,7 @@ function Pokemon:init(def, level)
     self.speed = self.baseSpeed
 
     self.level = level
-    self.currentExp = 80
+    self.currentExp = 0
     self.expToLevel = self.level * self.level * 5 * 0.75
 
     self:calculateStats()
@@ -92,7 +92,7 @@ function Pokemon:statsLevelUp()
         end
     end
 
-    return HPIncrease, attackIncrease, defenseIncrease, speedIncrease
+    return {HPIncrease, attackIncrease, defenseIncrease, speedIncrease}
 end
 
 function Pokemon:levelUp()

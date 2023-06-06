@@ -8,26 +8,17 @@
 
 MenuState = Class{__includes = BaseState}
 
-function MenuState:init(msg, onClose)
-    print(msg)
+function MenuState:init(items, onClose)
     self.onClose = onClose or function() end
     self.menu = Menu {
-        x = VIRTUAL_WIDTH / 2 - 64,
+        x = VIRTUAL_WIDTH / 2 - 100,
         y = VIRTUAL_HEIGHT / 2 - 64,
-        width = 128,
+        width = 200,
         height = 128,
         useSelector = false,
-        items = {
-            {
-                text = "health",
-                onSelect = self.onClose
-            },
-            {
-                text = "attack",
-                onSelect = function() end
-            }
-        }
+        items = items
     }
+    self.menu.selection.items[1].onSelect = onClose
 end
 
 function MenuState:update(dt)

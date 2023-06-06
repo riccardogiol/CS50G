@@ -216,7 +216,22 @@ function TakeTurnState:victory()
 
                         gStateStack:push(BattleMessageState('Congratulations! Level Up!',
                         function()
-                            gStateStack:push(MenuState(levelUpStats, 
+                            local levelUpItems = {
+                                {
+                                    text = "Health: " .. tostring(self.playerPokemon.HP - levelUpStats[1]) .. " + " .. levelUpStats[1] .. " = " .. self.playerPokemon.HP,
+                                    onSelect = function() end
+                                },
+                                {
+                                    text = "Attack: " .. tostring(self.playerPokemon.attack - levelUpStats[2]) .. " + " .. levelUpStats[2] .. " = " .. self.playerPokemon.attack
+                                },
+                                {
+                                    text = "Defense: " .. tostring(self.playerPokemon.defense - levelUpStats[3]) .. " + " .. levelUpStats[3] .. " = " .. self.playerPokemon.defense
+                                },
+                                {
+                                    text = "Speed: " .. tostring(self.playerPokemon.speed - levelUpStats[4]) .. " + " .. levelUpStats[4] .. " = " .. self.playerPokemon.speed
+                                }
+                            }
+                            gStateStack:push(MenuState(levelUpItems, 
                                 function()
                                     -- pop the menu state
                                     gStateStack:pop()
